@@ -31,13 +31,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="connections"
-        options={{
-          title: t("nav.connectionsTab"),
-          tabBarIcon: ({ color, size }) => <Ionicons name="server-outline" size={size} color={color as unknown as string} />,
-        }}
-      />
-      <Tabs.Screen
         name="settings"
         options={{
           title: t("nav.settingsTab"),

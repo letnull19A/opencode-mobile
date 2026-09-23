@@ -479,7 +479,6 @@ export default function SessionsScreen() {
       <TouchableOpacity
         style={[styles.connectionBar, isDark && styles.connectionBarDark]}
         onPress={() => dirSheetRef.current?.expand()}
-        onLongPress={() => router.push("/(tabs)/connections")}
         activeOpacity={0.7}
         testID="connection-status-bar"
       >
