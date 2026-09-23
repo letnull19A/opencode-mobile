@@ -810,11 +810,6 @@ export default function SessionScreen() {
               <Ionicons name="add-circle-outline" size={26} color={isDark ? "#888888" : "#666666"} />
             </TouchableOpacity>
 
-            {/* Clipboard paste button */}
-            <TouchableOpacity style={s.attachBtn} onPress={pasteFromClipboard}>
-              <Ionicons name="clipboard-outline" size={22} color={isDark ? "#888888" : "#666666"} />
-            </TouchableOpacity>
-
             <TextInput
               style={[s.input, isDark && s.inputDark, speech.listening && s.inputListening, { maxHeight: inputMaxHeight }]}
               placeholder={
