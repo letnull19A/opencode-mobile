@@ -70,6 +70,11 @@
       "privacyNotSavedMessage": "Crash reporting is off for this session, but your choice could not be saved. Please try again.",
       "notificationsDisabledTitle": "Notifications Disabled",
       "notificationsDisabledMessage": "Enable notifications for OpenCode in your device settings to receive alerts."
+    },
+    "logout": {
+      "button": "Выйти",
+      "confirmTitle": "Выйти",
+      "confirmMessage": "Вы уверены, что хотите выйти? Потребуется повторный вход."
     }
   },
   "session": {
