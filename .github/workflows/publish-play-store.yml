@@ -1,10 +1,9 @@
 name: Publish to Google Play Store
 
+# DISABLED — external publishing paused. Only GitHub APK prereleases via build.yml
+# (dev → GitHub prerelease, tag v* → GitHub release). Re-enable by restoring
+# the original `on:` triggers below when main should publish to Play again.
 on:
-  release:
-    types: [published]
-  push:
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
       track:
@@ -35,6 +34,7 @@ concurrency:
 
 jobs:
   publish:
+    if: false # disabled — see header
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_SENTRY_DSN: ${{ secrets.EXPO_PUBLIC_SENTRY_DSN }}

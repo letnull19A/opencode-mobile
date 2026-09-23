@@ -34,11 +34,8 @@
 
 name: Publish to App Store (TestFlight)
 
+# DISABLED — external publishing paused. Only GitHub APK prereleases via build.yml
 on:
-  # One release ⇒ one build. Triggering only on `release: published` avoids the
-  # duplicate build that a combined release+tag trigger would create.
-  release:
-    types: [published]
   workflow_dispatch:
 
 # Serialize runs per release so a re-trigger cannot start a duplicate concurrent
@@ -52,6 +49,7 @@ permissions:
 
 jobs:
   testflight:
+    if: false # disabled — see header
     name: EAS Build and submit to TestFlight
     runs-on: ubuntu-latest
     timeout-minutes: 90

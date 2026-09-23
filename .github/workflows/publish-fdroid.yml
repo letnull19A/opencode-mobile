@@ -1,12 +1,13 @@
 name: Publish F-Droid Repo
 
+# DISABLED — external publishing paused. Only GitHub APK prereleases via build.yml
+# Re-enable by restoring `push: tags: ["v*"]` when main should publish to F-Droid.
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
 
 jobs:
   publish-fdroid:
+    if: false # disabled — see header
     runs-on: ubuntu-latest
     permissions:
       contents: write
