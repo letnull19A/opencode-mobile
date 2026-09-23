@@ -1,6 +1,26 @@
-import * as Notifications from "expo-notifications"
 import * as Device from "expo-device"
 import { Platform, AppState } from "react-native"
+
+// expo-notifications remote push was removed from Expo Go in SDK 53.
+// Import must be optional so the app still runs in Expo Go (used for
+// `npx expo start` local dev). In Expo Go the module throws at import
+// time, so we catch and provide a no-op stub; in a dev build / standalone
+// the real module loads and notifications work as before.
+let Notifications: typeof import("expo-notifications")
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  Notifications = require("expo-notifications") as typeof import("expo-notifications")
+} catch {
+  Notifications = {
+    setNotificationHandler: () => {},
+    getPermissionsAsync: async () => ({ status: "undetermined" }) as never,
+    requestPermissionsAsync: async () => ({ status: "undetermined" }) as never,
+    setNotificationChannelAsync: async () => {},
+    scheduleNotificationAsync: async () => "stub-id" as never,
+    addNotificationResponseReceivedListener: () => ({ remove: () => {} }) as never,
+    AndroidImportance: { HIGH: 4 } as never,
+  } as unknown as typeof import("expo-notifications")
+}
 
 // ---------------------------------------------------------------------------
 // Categories — every notification belongs to exactly one
