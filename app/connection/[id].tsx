@@ -20,6 +20,7 @@ import { probeConnection, shareReport } from "../../src/lib/diagnostics"
 import { captureDiagnostic } from "../../src/lib/sentry"
 import { parseUrl } from "../../src/lib/diagnostics-classify"
 import { buildAuth } from "../../src/lib/auth"
+import { HARDCODED_SERVER_URL } from "../../src/lib/server-config"
 
 // labelKey (not literal text): this is a module-level constant evaluated
 // before i18next is guaranteed ready, so the label is resolved with t() at
@@ -72,22 +73,13 @@ export default function EditConnectionScreen() {
   }
 
   const handleTest = async () => {
-    if (!url.trim()) {
-      Alert.alert(t("common.error"), t("connection.shared.alerts.enterUrl"))
-      return
-    }
-    if (!parseUrl(url).valid) {
-      Alert.alert(t("connection.shared.alerts.invalidUrlTitle"), t("connection.shared.alerts.invalidUrlMessage"))
-      return
-    }
-
     setIsTesting(true)
     const result = await testConnection(
       {
         id: connection.id,
         name: name || "Test",
         type,
-        url: url.trim(),
+        url: HARDCODED_SERVER_URL,
         directory: directory.trim() || undefined,
         username: username.trim() || undefined,
       },
@@ -102,7 +94,7 @@ export default function EditConnectionScreen() {
     }
 
     // Failed: run active diagnostics, capture to Sentry, offer a shareable report.
-    const report = await probeConnection(url.trim(), buildAuth(username, password))
+    const report = await probeConnection(HARDCODED_SERVER_URL, buildAuth(username, password))
     captureDiagnostic(report)
     setIsTesting(false)
 
@@ -124,14 +116,6 @@ export default function EditConnectionScreen() {
       Alert.alert(t("common.error"), t("connection.shared.alerts.enterName"))
       return
     }
-    if (!url.trim()) {
-      Alert.alert(t("common.error"), t("connection.shared.alerts.enterUrl"))
-      return
-    }
-    if (!parseUrl(url).valid) {
-      Alert.alert(t("connection.shared.alerts.invalidUrlTitle"), t("connection.shared.alerts.invalidUrlMessage"))
-      return
-    }
 
     setIsSaving(true)
     try {
@@ -140,7 +124,7 @@ export default function EditConnectionScreen() {
         {
           name: name.trim(),
           type,
-          url: url.trim(),
+          url: HARDCODED_SERVER_URL,
           directory: directory.trim() || undefined,
           username: username.trim() || undefined,
         },
@@ -229,18 +213,13 @@ export default function EditConnectionScreen() {
         onChangeText={setName}
       />
 
-      {/* URL */}
+      {/* URL — hardcoded */}
       <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.serverUrl")}</Text>
-      <TextInput
-        style={[styles.input, isDark && styles.inputDark]}
-        placeholder="http://192.168.1.100:4096"
-        placeholderTextColor={isDark ? "#666666" : "#999999"}
-        value={url}
-        onChangeText={setUrl}
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType="url"
-      />
+      <View style={[styles.input, isDark && styles.inputDark, { opacity: 0.7 }]}>
+        <Text style={{ color: isDark ? "#888888" : "#666666", fontSize: 16 }} selectable>
+          {HARDCODED_SERVER_URL}
+        </Text>
+      </View>
 
       {/* Directory */}
       <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.directoryOptional")}</Text>

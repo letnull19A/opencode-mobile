@@ -23,6 +23,7 @@ import { buildAuth } from "../../src/lib/auth"
 import { AnalyticsEvent, track } from "../../src/lib/analytics"
 import { submitWaitlistSignup, buildWaitlistMailtoUrl, needsManualEscapeHatch, type QueuedSignup } from "../../src/lib/waitlist"
 import { flushPendingSignups, queuePendingSignup, readPendingSignups, dropPendingSignup } from "../../src/lib/waitlist-queue-storage"
+import { HARDCODED_SERVER_URL } from "../../src/lib/server-config"
 import appJson from "../../app.json"
 
 // Same read as sentry.ts: app.json is the single source of the user-visible
@@ -77,26 +78,7 @@ export default function AddConnectionScreen() {
   }, [])
 
   const buildUrl = () => {
-    if (mode === "advanced") return url.trim()
-    const raw = ip.trim()
-    if (!raw) return ""
-    // Be forgiving about pasted values: a full URL, a host:port, or a
-    // host with a trailing path. Extract scheme, host, and port so we
-    // never produce "http://http://host:4096:4096".
-    const schemeMatch = raw.match(/^(https?):\/\//i)
-    const scheme = schemeMatch ? schemeMatch[1].toLowerCase() : "http"
-    let rest = raw.replace(/^https?:\/\//i, "")
-    rest = rest.split("/")[0] // drop any path/query
-    let host = rest
-    let pastedPort = ""
-    const lastColon = rest.lastIndexOf(":")
-    // Only treat trailing ":NNNN" as a port (ignore IPv6 colons / bare host)
-    if (lastColon > -1 && /^\d+$/.test(rest.slice(lastColon + 1))) {
-      host = rest.slice(0, lastColon)
-      pastedPort = rest.slice(lastColon + 1)
-    }
-    const finalPort = pastedPort || port.trim() || "4096"
-    return `${scheme}://${host}:${finalPort}`
+    return HARDCODED_SERVER_URL
   }
 
   const handleQuickConnect = async () => {
@@ -170,14 +152,6 @@ export default function AddConnectionScreen() {
       Alert.alert(t("common.error"), t("connection.shared.alerts.enterName"))
       return
     }
-    if (!url.trim()) {
-      Alert.alert(t("common.error"), t("connection.shared.alerts.enterUrl"))
-      return
-    }
-    if (!parseUrl(url).valid) {
-      Alert.alert(t("connection.shared.alerts.invalidUrlTitle"), t("connection.shared.alerts.invalidUrlMessage"))
-      return
-    }
 
     track(AnalyticsEvent.ConnectionFormSubmitted, { mode: "advanced" })
     setIsConnecting(true)
@@ -192,7 +166,7 @@ export default function AddConnectionScreen() {
         id: "",
         name: name.trim(),
         type,
-        url: url.trim(),
+        url: HARDCODED_SERVER_URL,
         directory: directory.trim() || undefined,
         username: username.trim() || undefined,
       },
@@ -206,7 +180,7 @@ export default function AddConnectionScreen() {
           {
             name: name.trim(),
             type,
-            url: url.trim(),
+            url: HARDCODED_SERVER_URL,
             directory: directory.trim() || undefined,
             username: username.trim() || undefined,
           },
@@ -227,14 +201,14 @@ export default function AddConnectionScreen() {
     // Failed: same "Connection Failed" alert as Quick Connect — run active
     // diagnostics, capture to Sentry, and offer a shareable report instead of
     // silently persisting an unreachable/unauthorized connection.
-    const report = await probeConnection(url.trim(), buildAuth(username, password))
+    const report = await probeConnection(HARDCODED_SERVER_URL, buildAuth(username, password))
     captureDiagnostic(report)
     setIsConnecting(false)
     Alert.alert(
       t("connection.shared.alerts.connectionFailedTitle"),
       t("connection.add.alerts.connectionFailedMessage", {
         summary: report.summary,
-        target: url.trim(),
+        target: HARDCODED_SERVER_URL,
         error: result.error || t("connection.shared.alerts.unknownError"),
       }),
       [
@@ -326,30 +300,12 @@ export default function AddConnectionScreen() {
           <Text style={[styles.quickSubtitle, isDark && styles.hintDark]}>{t("connection.add.quick.subtitle")}</Text>
         </View>
 
-        {/* IP Address */}
-        <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.add.quick.ipAddressLabel")}</Text>
-        <View style={styles.ipRow}>
-          <TextInput
-            style={[styles.input, styles.ipInput, isDark && styles.inputDark]}
-            placeholder="192.168.1.100"
-            placeholderTextColor={isDark ? "#666666" : "#999999"}
-            value={ip}
-            onChangeText={setIp}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-            testID="connect-ip-input"
-          />
-          <Text style={[styles.ipColon, isDark && styles.textDark]}>:</Text>
-          <TextInput
-            style={[styles.input, styles.portInput, isDark && styles.inputDark]}
-            placeholder="4096"
-            placeholderTextColor={isDark ? "#666666" : "#999999"}
-            value={port}
-            onChangeText={setPort}
-            keyboardType="number-pad"
-            testID="connect-port-input"
-          />
+        {/* Server URL — hardcoded */}
+        <Text style={[styles.label, isDark && styles.labelDark]}>Server URL</Text>
+        <View style={[styles.input, isDark && styles.inputDark, { opacity: 0.7 }]}>
+          <Text style={{ color: isDark ? "#888888" : "#666666", fontSize: 16 }} selectable>
+            {HARDCODED_SERVER_URL}
+          </Text>
         </View>
 
         {/* Optional name */}
@@ -402,32 +358,11 @@ export default function AddConnectionScreen() {
           )}
         </TouchableOpacity>
 
-        {/* Help text */}
+        {/* Info about hardcoded server */}
         <View style={[styles.helpBox, isDark && styles.helpBoxDark]}>
-          <Text style={[styles.helpTitle, isDark && styles.textDark]}>{t("connection.add.quick.helpTitle")}</Text>
+          <Text style={[styles.helpTitle, isDark && styles.textDark]}>Подключение к серверу</Text>
           <Text style={[styles.helpText, isDark && styles.hintDark]}>
-            {t("connection.add.quick.helpMacPrefix")}
-            {"\n"}
-            <Text style={styles.code}>ipconfig getifaddr en0</Text>
-          </Text>
-          <Text style={[styles.helpText, isDark && styles.hintDark, { marginTop: 8 }]}>
-            {t("connection.add.quick.helpTailscalePrefix")}
-            {"\n"}
-            <Text style={styles.code}>http://100.64.12.34:4096</Text>
-            {"\n"}
-            <Text style={styles.code}>http://my-mac.tailnet.ts.net:4096</Text>
-          </Text>
-          <Text style={[styles.helpText, isDark && styles.hintDark, { marginTop: 8 }]}>
-            {t("connection.add.quick.helpProtocolPrefix")}
-            <Text style={styles.code}>http://</Text>
-            {t("connection.add.quick.helpProtocolMiddle")}
-            <Text style={styles.code}>https://</Text>
-            {t("connection.add.quick.helpProtocolSuffix")}
-          </Text>
-          <Text style={[styles.helpText, isDark && styles.hintDark, { marginTop: 8 }]}>
-            {t("connection.add.quick.helpRunningPrefix")}
-            {"\n"}
-            <Text style={styles.code}>opencode serve --hostname 0.0.0.0</Text>
+            Приложение подключается только к {HARDCODED_SERVER_URL}. Убедитесь, что сервер доступен и требует пароль, если настроен.
           </Text>
         </View>
 
@@ -578,33 +513,14 @@ export default function AddConnectionScreen() {
         onChangeText={setName}
       />
 
-      {/* URL */}
+      {/* URL — hardcoded */}
       <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.serverUrl")}</Text>
-      <TextInput
-        style={[styles.input, isDark && styles.inputDark]}
-        placeholder={
-          type === "local"
-            ? "http://192.168.1.100:4096"
-            : type === "tunnel"
-              ? "https://your-tunnel.trycloudflare.com"
-              : "https://api.opencode.ai"
-        }
-        placeholderTextColor={isDark ? "#666666" : "#999999"}
-        value={url}
-        onChangeText={setUrl}
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType="url"
-      />
-      <Text style={[styles.hint, isDark && styles.hintDark]}>
-        {t("connection.add.advanced.urlHintPrefix")}
-        <Text style={styles.code}>http://100.64.12.34:4096</Text>
-        {t("connection.add.advanced.urlHintOr")}
-        <Text style={styles.code}>http://my-mac.tailnet.ts.net:4096</Text>
-        {t("connection.add.advanced.urlHintUse")}
-        <Text style={styles.code}>https://</Text>
-        {t("connection.add.advanced.urlHintSuffix")}
-      </Text>
+      <View style={[styles.input, isDark && styles.inputDark, { opacity: 0.7 }]}>
+        <Text style={{ color: isDark ? "#888888" : "#666666", fontSize: 16 }} selectable>
+          {HARDCODED_SERVER_URL}
+        </Text>
+      </View>
+      <Text style={[styles.hint, isDark && styles.hintDark]}>Сервер фиксирован — используется только {HARDCODED_SERVER_URL}</Text>
 
       {/* Directory */}
       <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.directoryOptional")}</Text>

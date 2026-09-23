@@ -7,6 +7,7 @@ import { addBreadcrumb } from "../lib/sentry"
 import { AnalyticsEvent, classifyConnectionError, track, type ConnectionTestSource } from "../lib/analytics"
 import { buildAuth } from "../lib/auth"
 import { stripTrailingSlash } from "../lib/path-utils"
+import { HARDCODED_SERVER_URL } from "../lib/server-config"
 
 const CONNECTIONS_KEY = "opencode_connections"
 const PASSWORDS_PREFIX = "opencode_password_"
@@ -91,8 +92,34 @@ export const useConnections = create<ConnectionsState>((set, get) => ({
         SecureStore.getItemAsync(CONNECTIONS_KEY),
         SecureStore.getItemAsync(RECENT_DIRS_KEY),
       ])
-      const connections: ServerConnection[] = stored ? JSON.parse(stored) : []
+      let connections: ServerConnection[] = stored ? JSON.parse(stored) : []
       const recentDirectories: string[] = recentRaw ? JSON.parse(recentRaw) : []
+      // Enforce hardcoded URL — migrate any existing connections
+      let migrated = false
+      connections = connections.map((c) => {
+        if (c.url !== HARDCODED_SERVER_URL) {
+          migrated = true
+          return { ...c, url: HARDCODED_SERVER_URL }
+        }
+        return c
+      })
+      if (migrated) {
+        await SecureStore.setItemAsync(CONNECTIONS_KEY, JSON.stringify(connections))
+      }
+
+      // Auto-create default hardcoded connection if none exists
+      if (connections.length === 0) {
+        const id = generateId()
+        const defaultConn: ServerConnection = {
+          id,
+          name: "devbox.web2bizz.team",
+          type: "cloud",
+          url: HARDCODED_SERVER_URL,
+          active: true,
+        }
+        connections = [defaultConn]
+        await SecureStore.setItemAsync(CONNECTIONS_KEY, JSON.stringify(connections))
+      }
 
       // Find active connection
       const active = connections.find((c) => c.active) || null
@@ -138,8 +165,10 @@ export const useConnections = create<ConnectionsState>((set, get) => ({
 
   addConnection: async (connection, password) => {
     const id = generateId()
+    // Enforce hardcoded URL
+    const hardcodedConnection = { ...connection, url: HARDCODED_SERVER_URL }
     const newConnection: ServerConnection = {
-      ...connection,
+      ...hardcodedConnection,
       id,
       active: get().connections.length === 0, // First connection is active
     }
@@ -261,7 +290,7 @@ export const useConnections = create<ConnectionsState>((set, get) => ({
     track(AnalyticsEvent.ConnectionAttempted, { source })
     try {
       const client = createClient({
-        baseUrl: connection.url,
+        baseUrl: HARDCODED_SERVER_URL,
         directory: connection.directory,
         auth: buildAuth(connection.username, password),
       })
@@ -277,7 +306,9 @@ export const useConnections = create<ConnectionsState>((set, get) => ({
   },
 
   updateConnection: async (id, updates, password) => {
-    const connections = get().connections.map((c) => (c.id === id ? { ...c, ...updates } : c))
+    // Enforce hardcoded URL — ignore any URL change from UI
+    const sanitizedUpdates = { ...updates, url: HARDCODED_SERVER_URL }
+    const connections = get().connections.map((c) => (c.id === id ? { ...c, ...sanitizedUpdates } : c))
 
     await SecureStore.setItemAsync(CONNECTIONS_KEY, JSON.stringify(connections))
 
