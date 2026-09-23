@@ -22,7 +22,6 @@
  */
 
 import * as SecureStore from "expo-secure-store"
-import { disableSentry, initSentry, sentryEnabled } from "./sentry"
 import { initAnalytics, shutdownAnalytics, analyticsEnabled, trackAppOpened } from "./analytics"
 
 const CONSENT_KEY = "opencode_telemetry_consent"
@@ -80,7 +79,6 @@ async function applyTelemetryConsent(granted: boolean): Promise<void> {
   if (granted) {
     await SecureStore.setItemAsync(CONSENT_KEY, "granted")
     _resolved = true
-    if (!sentryEnabled()) initSentry()
     if (!analyticsEnabled()) initAnalytics()
     // First-ever session reaches here via the consent modal's "Allow" (app
     // start skipped init because consent was still unknown), so app_opened
@@ -93,7 +91,6 @@ async function applyTelemetryConsent(granted: boolean): Promise<void> {
   }
 
   _resolved = false
-  await disableSentry()
   await shutdownAnalytics()
   try {
     await SecureStore.setItemAsync(CONSENT_KEY, "denied")

@@ -45,13 +45,6 @@
       "expo-secure-store",
       "expo-local-authentication",
       [
-        "@sentry/react-native/expo",
-        {
-          "organization": "vibetechnologies",
-          "project": "opencode-mobile"
-        }
-      ],
-      [
         "expo-notifications",
         {
           "icon": "./assets/icon.png",

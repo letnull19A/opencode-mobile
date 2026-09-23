@@ -35,12 +35,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      EXPO_PUBLIC_SENTRY_DSN: ${{ secrets.EXPO_PUBLIC_SENTRY_DSN }}
       EXPO_PUBLIC_POSTHOG_KEY: ${{ secrets.EXPO_PUBLIC_POSTHOG_KEY }}
       EXPO_PUBLIC_CHATWOOT_INBOX_IDENTIFIER: ${{ secrets.EXPO_PUBLIC_CHATWOOT_INBOX_IDENTIFIER }}
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
     steps:
       - uses: actions/checkout@v6
 
@@ -70,22 +66,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-
-      - name: Set Sentry release identifiers
-        run: |
-          VERSION=$(node -p "require('./app.json').expo.version")
-          echo "SENTRY_RELEASE=opencode-mobile@${VERSION}" >> "$GITHUB_ENV"
-          echo "SENTRY_DIST=${VERSION}" >> "$GITHUB_ENV"
-          echo "Sentry release=opencode-mobile@${VERSION} dist=${VERSION}"
-
-      - name: Disable Sentry upload when secrets missing
-        run: |
-          if [ -z "${{ secrets.SENTRY_AUTH_TOKEN }}" ] || [ -z "${{ secrets.SENTRY_ORG }}" ] || [ -z "${{ secrets.SENTRY_PROJECT }}" ]; then
-            echo "SENTRY_DISABLE_AUTO_UPLOAD=true" >> "$GITHUB_ENV"
-            echo "::notice::Sentry upload disabled — missing SENTRY_* secrets (fork without Sentry config)"
-          else
-            echo "Sentry upload enabled"
-          fi
 
       - name: Expo prebuild
         run: npx expo prebuild --platform android --no-install

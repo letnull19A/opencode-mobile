@@ -16,7 +16,6 @@ import { AuthGate } from "../src/components/AuthGate"
 import { ErrorBoundary } from "../src/components/ErrorBoundary"
 import { TelemetryConsentModal } from "../src/components/TelemetryConsentModal"
 import * as notifications from "../src/lib/notifications"
-import { addBreadcrumb, wrap } from "../src/lib/sentry"
 import { loadTelemetryConsent, setTelemetryConsent } from "../src/lib/telemetry"
 import { initAnalytics, trackAppOpened } from "../src/lib/analytics"
 import { flushPendingSignups } from "../src/lib/waitlist-queue-storage"
@@ -55,19 +54,14 @@ function RootLayout() {
       else router.push("/")
     })
 
-    // Load telemetry consent — initialise Sentry only if previously granted
+    // Load telemetry consent — initialise analytics only if granted
     loadTelemetryConsent()
       .then((state) => {
         if (state === "granted") {
-          import("../src/lib/sentry").then(({ initSentry }) => {
-            initSentry()
-            addBreadcrumb({ category: "app.lifecycle", message: "app started" })
-          })
           initAnalytics()
           trackAppOpened()
           setConsentState("decided")
         } else if (state === "denied") {
-          addBreadcrumb({ category: "app.lifecycle", message: "app started (telemetry off)" })
           setConsentState("decided")
         } else {
           setConsentState("unknown")
@@ -107,11 +101,7 @@ function RootLayout() {
   useEffect(() => {
     const flush = () => {
       void flushPendingSignups()
-        .then((outcome) => {
-          if (outcome.synced.length > 0) {
-            addBreadcrumb({ category: "waitlist", message: `retried ${outcome.synced.length} queued signup(s)` })
-          }
-        })
+        .then(() => {})
         .catch(() => {
           // Best effort: the entry stays queued for the next foreground.
         })
@@ -239,4 +229,4 @@ function RootLayout() {
   )
 }
 
-export default wrap(RootLayout)
+export default RootLayout

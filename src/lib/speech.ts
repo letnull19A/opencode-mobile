@@ -1,5 +1,23 @@
 import { useState, useCallback, useRef, useEffect } from "react"
-import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from "expo-speech-recognition"
+
+// expo-speech-recognition requires a dev build (native module not in Expo Go).
+// Make it optional so `npx expo start` in Expo Go doesn't crash at import time.
+let ExpoSpeechRecognitionModule: any
+let useSpeechRecognitionEvent: any
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mod = require("expo-speech-recognition") as typeof import("expo-speech-recognition")
+  ExpoSpeechRecognitionModule = mod.ExpoSpeechRecognitionModule
+  useSpeechRecognitionEvent = mod.useSpeechRecognitionEvent
+} catch {
+  ExpoSpeechRecognitionModule = {
+    requestPermissionsAsync: async () => ({ granted: false }),
+    start: () => {},
+    stop: () => {},
+    abort: () => {},
+  }
+  useSpeechRecognitionEvent = () => {}
+}
 
 interface SpeechState {
   listening: boolean
@@ -36,13 +54,13 @@ export function useSpeech(onResult: (text: string) => void): SpeechState & Speec
     pending.current = ""
   })
 
-  useSpeechRecognitionEvent("result", (event) => {
+  useSpeechRecognitionEvent("result", (event: any) => {
     const text = event.results[0]?.transcript || ""
     pending.current = text
     setTranscript(text)
   })
 
-  useSpeechRecognitionEvent("error", (event) => {
+  useSpeechRecognitionEvent("error", (event: any) => {
     // "no-speech" is not really an error — user just didn't say anything
     if (event.error === "no-speech") {
       setListening(false)
