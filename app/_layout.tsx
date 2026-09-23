@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Stack, router } from "expo-router"
+import { Stack, router, useSegments } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { useColorScheme, View, ActivityIndicator, AppState } from "react-native"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -31,7 +31,7 @@ function RootLayout() {
   const { t } = useTranslation()
 
   const { initialize: initAuth, isLoading: authLoading } = useAuth()
-  const { loadConnections, isLoading: connectionsLoading, client } = useConnections()
+  const { loadConnections, isLoading: connectionsLoading, client, activeConnection } = useConnections()
   const sseStarted = useRef(false)
   const notifPermissionRequested = useRef(false)
 
@@ -145,6 +145,23 @@ function RootLayout() {
 
   const isLoading = authLoading || connectionsLoading || consentState === "loading"
 
+  // Server auth gate: split into two routes — unauthenticated sees only /login,
+  // authenticated sees the full app. HARDCODED_SERVER_URL is fixed, so auth is
+  // just username/password for that single server.
+  const segments = useSegments()
+  const authError = useEvents((s) => s.authError)
+  const isAuthorized = !!activeConnection && !!client && !authError
+  const isOnLogin = segments[0] === "login"
+
+  useEffect(() => {
+    if (isLoading) return
+    if (!isAuthorized && !isOnLogin) {
+      router.replace("/login")
+    } else if (isAuthorized && isOnLogin) {
+      router.replace("/(tabs)")
+    }
+  }, [isAuthorized, isOnLogin, isLoading])
+
   useEffect(() => {
     if (!isLoading) {
       SplashScreen.hideAsync().catch(() => {})
@@ -184,6 +201,7 @@ function RootLayout() {
                 },
               }}
             >
+              <Stack.Screen name="login" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen
                 name="session/[id]"
