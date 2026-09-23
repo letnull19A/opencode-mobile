@@ -300,13 +300,7 @@ export default function AddConnectionScreen() {
           <Text style={[styles.quickSubtitle, isDark && styles.hintDark]}>{t("connection.add.quick.subtitle")}</Text>
         </View>
 
-        {/* Server URL — hardcoded */}
-        <Text style={[styles.label, isDark && styles.labelDark]}>Server URL</Text>
-        <View style={[styles.input, isDark && styles.inputDark, { opacity: 0.7 }]}>
-          <Text style={{ color: isDark ? "#888888" : "#666666", fontSize: 16 }} selectable>
-            {HARDCODED_SERVER_URL}
-          </Text>
-        </View>
+        {/* Server — hardcoded, no domain shown */}
 
         {/* Optional name */}
         <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.add.quick.nameOptionalLabel")}</Text>
@@ -358,11 +352,11 @@ export default function AddConnectionScreen() {
           )}
         </TouchableOpacity>
 
-        {/* Info about hardcoded server */}
+        {/* Info about server */}
         <View style={[styles.helpBox, isDark && styles.helpBoxDark]}>
           <Text style={[styles.helpTitle, isDark && styles.textDark]}>Подключение к серверу</Text>
           <Text style={[styles.helpText, isDark && styles.hintDark]}>
-            Приложение подключается только к {HARDCODED_SERVER_URL}. Убедитесь, что сервер доступен и требует пароль, если настроен.
+            Введите логин и пароль для подключения.
           </Text>
         </View>
 
@@ -513,14 +507,7 @@ export default function AddConnectionScreen() {
         onChangeText={setName}
       />
 
-      {/* URL — hardcoded */}
-      <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.serverUrl")}</Text>
-      <View style={[styles.input, isDark && styles.inputDark, { opacity: 0.7 }]}>
-        <Text style={{ color: isDark ? "#888888" : "#666666", fontSize: 16 }} selectable>
-          {HARDCODED_SERVER_URL}
-        </Text>
-      </View>
-      <Text style={[styles.hint, isDark && styles.hintDark]}>Сервер фиксирован — используется только {HARDCODED_SERVER_URL}</Text>
+      {/* URL is hardcoded — not shown to user */}
 
       {/* Directory */}
       <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.directoryOptional")}</Text>

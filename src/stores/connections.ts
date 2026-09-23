@@ -112,7 +112,7 @@ export const useConnections = create<ConnectionsState>((set, get) => ({
         const id = generateId()
         const defaultConn: ServerConnection = {
           id,
-          name: "devbox.web2bizz.team",
+          name: "Основной сервер",
           type: "cloud",
           url: HARDCODED_SERVER_URL,
           active: true,

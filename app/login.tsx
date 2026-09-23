@@ -44,7 +44,7 @@ export default function LoginScreen() {
         const result = await testConnection(
           {
             id: "",
-            name: "devbox.web2bizz.team",
+            name: "Основной сервер",
             type: "cloud",
             url: HARDCODED_SERVER_URL,
             username: username.trim(),
@@ -55,7 +55,7 @@ export default function LoginScreen() {
         if (!result.ok) throw new Error(result.error || "Connection failed")
         await addConnection(
           {
-            name: "devbox.web2bizz.team",
+            name: "Основной сервер",
             type: "cloud",
             url: HARDCODED_SERVER_URL,
             username: username.trim(),
@@ -91,19 +91,10 @@ export default function LoginScreen() {
         <View style={styles.header}>
           <Ionicons name="lock-closed-outline" size={64} color={isDark ? "#ffffff" : "#0a0a0a"} />
           <Text style={[styles.title, isDark && styles.textDark]}>Вход</Text>
-          <Text style={[styles.subtitle, isDark && styles.subtitleDark]}>
-            Подключение к {HARDCODED_SERVER_URL}
-          </Text>
+          <Text style={[styles.subtitle, isDark && styles.subtitleDark]}>Введите логин и пароль</Text>
           {authError ? (
             <Text style={styles.authErrorText}>Ошибка авторизации — проверьте логин и пароль</Text>
           ) : null}
-        </View>
-
-        <View style={[styles.serverBox, isDark && styles.serverBoxDark]}>
-          <Ionicons name="cloud-outline" size={16} color={isDark ? "#888888" : "#666666"} />
-          <Text style={[styles.serverText, isDark && styles.subtitleDark]} selectable>
-            {HARDCODED_SERVER_URL}
-          </Text>
         </View>
 
         <Text style={[styles.label, isDark && styles.labelDark]}>Логин</Text>

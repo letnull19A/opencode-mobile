@@ -30,7 +30,6 @@ import { groupByDirectory } from "../../src/lib/session-grouping"
 import { UpdateBanner } from "../../src/components/UpdateBanner"
 import { nameOf } from "../../src/lib/path-utils"
 import { SETUP_GUIDE_URL } from "../../src/lib/links"
-import { HARDCODED_SERVER_URL } from "../../src/lib/server-config"
 
 function formatTime(timestamp: number, t: (key: string, opts?: Record<string, unknown>) => string): string {
   const date = new Date(timestamp)
@@ -441,9 +440,7 @@ export default function SessionsScreen() {
       <View style={[styles.emptyContainer, isDark && styles.containerDark]}>
         <Ionicons name="lock-closed-outline" size={64} color={isDark ? "#444444" : "#cccccc"} />
         <Text style={[styles.emptyTitle, isDark && styles.textDark]}>Требуется вход</Text>
-        <Text style={[styles.emptySubtitle, isDark && styles.metaDark]}>
-          Подключение к {HARDCODED_SERVER_URL} требует авторизации
-        </Text>
+        <Text style={[styles.emptySubtitle, isDark && styles.metaDark]}>Требуется авторизация</Text>
         <TouchableOpacity
           style={[styles.addButton, isDark && styles.addButtonDark]}
           onPress={() => router.push("/login")}

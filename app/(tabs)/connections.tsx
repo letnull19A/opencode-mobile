@@ -68,12 +68,7 @@ function ConnectionItem({
             </View>
           )}
         </View>
-        <Text
-          style={[styles.connectionUrl, isDark && styles.metaDark, isActive && styles.connectionUrlActive]}
-          numberOfLines={1}
-        >
-          {connection.url}
-        </Text>
+        {/* URL hidden — hardcoded server, not shown to user */}
         {connection.lastConnected && (
           <Text style={[styles.connectionMeta, isDark && styles.metaDark]}>
             {t("connectionsList.lastConnected", { date: new Date(connection.lastConnected).toLocaleDateString() })}

@@ -213,13 +213,7 @@ export default function EditConnectionScreen() {
         onChangeText={setName}
       />
 
-      {/* URL — hardcoded */}
-      <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.serverUrl")}</Text>
-      <View style={[styles.input, isDark && styles.inputDark, { opacity: 0.7 }]}>
-        <Text style={{ color: isDark ? "#888888" : "#666666", fontSize: 16 }} selectable>
-          {HARDCODED_SERVER_URL}
-        </Text>
-      </View>
+      {/* URL is hardcoded — not shown */}
 
       {/* Directory */}
       <Text style={[styles.label, isDark && styles.labelDark]}>{t("connection.shared.directoryOptional")}</Text>
