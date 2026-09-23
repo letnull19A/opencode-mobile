@@ -532,16 +532,7 @@ export default function SessionsScreen() {
         contentContainerStyle={sessions.length === 0 ? styles.emptyContent : undefined}
       />
 
-      {/* FAB to create new session */}
-      <TouchableOpacity
-        style={[styles.fab, isDark && styles.fabDark]}
-        onPress={onFabPress}
-        onLongPress={onFabLongPress}
-        delayLongPress={500}
-        testID="new-session-fab"
-      >
-        <Ionicons name="add" size={28} color={isDark ? "#0a0a0a" : "#ffffff"} />
-      </TouchableOpacity>
+      {/* FAB removed per request */}
 
       {/* New Session Info Modal */}
       <Modal visible={showNewSession} animationType="slide" transparent>
