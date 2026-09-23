@@ -20,6 +20,9 @@ import { addBreadcrumb, wrap } from "../src/lib/sentry"
 import { loadTelemetryConsent, setTelemetryConsent } from "../src/lib/telemetry"
 import { initAnalytics, trackAppOpened } from "../src/lib/analytics"
 import { flushPendingSignups } from "../src/lib/waitlist-queue-storage"
+import * as SplashScreen from "expo-splash-screen"
+
+SplashScreen.preventAutoHideAsync().catch(() => {})
 
 const queryClient = new QueryClient()
 
@@ -151,6 +154,12 @@ function RootLayout() {
   }, [client])
 
   const isLoading = authLoading || connectionsLoading || consentState === "loading"
+
+  useEffect(() => {
+    if (!isLoading) {
+      SplashScreen.hideAsync().catch(() => {})
+    }
+  }, [isLoading])
 
   if (isLoading) {
     return (
