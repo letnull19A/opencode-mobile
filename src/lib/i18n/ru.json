@@ -6,7 +6,9 @@
     "delete": "Удалить",
     "retry": "Повторить",
     "save": "Сохранить",
-    "shareReport": "Поделиться отчетом"
+    "shareReport": "Поделиться отчетом",
+    "connected": "Подключено",
+    "offline": "Не в сети"
   },
   "settings": {
     "sections": {

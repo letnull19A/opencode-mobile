@@ -474,29 +474,23 @@ export default function SessionsScreen() {
 
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
-      {/* Connection indicator — tap to switch project */}
-      <TouchableOpacity
-        style={[styles.connectionBar, isDark && styles.connectionBarDark]}
-        onPress={() => dirSheetRef.current?.expand()}
-        activeOpacity={0.7}
-        testID="connection-status-bar"
-      >
-        <View style={styles.connectionInfo}>
-          <View style={[styles.connectionDot, { backgroundColor: "#22c55e" }]} testID="connection-status-dot" />
-          <Text style={[styles.connectionName, isDark && styles.textDark]} numberOfLines={1}>
-            {activeConnection.name}
-          </Text>
-          {shortPath && (
-            <>
-              <Ionicons name="folder" size={14} color={isDark ? "#888888" : "#666666"} />
-              <Text style={[styles.projectPath, isDark && styles.metaDark]} numberOfLines={1}>
-                {shortPath}
-              </Text>
-            </>
-          )}
-        </View>
-        <Ionicons name="swap-horizontal-outline" size={16} color={isDark ? "#666666" : "#999999"} />
-      </TouchableOpacity>
+      {/* Project path — tap to switch (server name removed per request) */}
+      {shortPath ? (
+        <TouchableOpacity
+          style={[styles.connectionBar, isDark && styles.connectionBarDark]}
+          onPress={() => dirSheetRef.current?.expand()}
+          activeOpacity={0.7}
+          testID="connection-status-bar"
+        >
+          <View style={styles.connectionInfo}>
+            <Ionicons name="folder" size={14} color={isDark ? "#888888" : "#666666"} />
+            <Text style={[styles.projectPath, isDark && styles.metaDark]} numberOfLines={1}>
+              {shortPath}
+            </Text>
+          </View>
+          <Ionicons name="swap-horizontal-outline" size={16} color={isDark ? "#666666" : "#999999"} />
+        </TouchableOpacity>
+      ) : null}
 
       {error && (
         <View style={styles.errorBar}>

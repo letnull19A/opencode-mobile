@@ -6,7 +6,9 @@
     "delete": "Delete",
     "retry": "Retry",
     "save": "Save",
-    "shareReport": "Share report"
+    "shareReport": "Share report",
+    "connected": "Connected",
+    "offline": "Offline"
   },
   "settings": {
     "sections": {
