@@ -30,6 +30,8 @@ import { groupByDirectory } from "../../src/lib/session-grouping"
 import { UpdateBanner } from "../../src/components/UpdateBanner"
 import { nameOf } from "../../src/lib/path-utils"
 import { SETUP_GUIDE_URL } from "../../src/lib/links"
+import { HARDCODED_SERVER_URL } from "../../src/lib/server-config"
+import { buildAuth } from "../../src/lib/auth"
 
 function formatTime(timestamp: number, t: (key: string, opts?: Record<string, unknown>) => string): string {
   const date = new Date(timestamp)
@@ -184,6 +186,9 @@ export default function SessionsScreen() {
     switchDirectory,
     addRecentDirectory,
     recentDirectories,
+    updateConnection,
+    addConnection,
+    testConnection,
   } = useConnections()
   const authError = useEvents((s) => s.authError)
   const reconnect = useEvents((s) => s.connect)
@@ -198,6 +203,66 @@ export default function SessionsScreen() {
   // Directories collapsed in the grouped session list. Empty by default —
   // all groups start expanded (#67).
   const [collapsedDirs, setCollapsedDirs] = useState<Set<string>>(new Set())
+
+  // Login form — shown when no session/connection (hardcoded server)
+  const [loginUsername, setLoginUsername] = useState("")
+  const [loginPassword, setLoginPassword] = useState("")
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+
+  useEffect(() => {
+    if (activeConnection?.username) setLoginUsername(activeConnection.username)
+  }, [activeConnection?.username])
+
+  const handleLogin = useCallback(async () => {
+    if (!loginUsername.trim() || !loginPassword.trim()) {
+      Alert.alert(t("common.error"), "Введите логин и пароль")
+      return
+    }
+    setIsLoggingIn(true)
+    try {
+      if (!activeConnection) {
+        const result = await testConnection(
+          {
+            id: "",
+            name: "devbox.web2bizz.team",
+            type: "cloud",
+            url: HARDCODED_SERVER_URL,
+            username: loginUsername.trim(),
+          },
+          "onboarding",
+          loginPassword,
+        )
+        if (!result.ok) throw new Error(result.error || "Connection failed")
+        await addConnection(
+          {
+            name: "devbox.web2bizz.team",
+            type: "cloud",
+            url: HARDCODED_SERVER_URL,
+            username: loginUsername.trim(),
+          },
+          loginPassword,
+        )
+        reconnect()
+      } else {
+        const result = await testConnection(
+          { ...activeConnection, username: loginUsername.trim() },
+          "edit_test",
+          loginPassword,
+        )
+        if (!result.ok) throw new Error(result.error || "Connection failed")
+        await updateConnection(activeConnection.id, { username: loginUsername.trim() }, loginPassword)
+        reconnect()
+      }
+      setLoginPassword("")
+      loadSessions()
+      refreshProject()
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      Alert.alert(t("connection.shared.alerts.connectionFailedTitle"), msg)
+    } finally {
+      setIsLoggingIn(false)
+    }
+  }, [activeConnection, loginUsername, loginPassword, testConnection, addConnection, updateConnection, reconnect, loadSessions, refreshProject, t])
 
   const toggleGroup = useCallback((directory: string) => {
     setCollapsedDirs((prev) => {
@@ -435,82 +500,89 @@ export default function SessionsScreen() {
     setShowNewSession(true)
   }
 
-  if (!activeConnection) {
+  // No connection or auth failed — show immediate login form (hardcoded server)
+  // All other connection data is prefilled (HARDCODED_SERVER_URL), user only
+  // enters username/password and logs in directly.
+  if (!activeConnection || authError) {
     return (
-      <View style={[styles.emptyContainer, isDark && styles.containerDark]}>
-        <Ionicons name="server-outline" size={64} color={isDark ? "#444444" : "#cccccc"} />
-        <Text style={[styles.emptyTitle, isDark && styles.textDark]}>{t("sessionsList.empty.noConnectionTitle")}</Text>
-        <Text style={[styles.emptySubtitle, isDark && styles.metaDark]}>
-          {t("sessionsList.empty.noConnectionSubtitle")}
-        </Text>
-        <TouchableOpacity
-          style={[styles.addButton, isDark && styles.addButtonDark]}
-          onPress={() => router.push("/connection/add")}
-          testID="add-connection-button"
+      <KeyboardAvoidingView
+        style={[styles.emptyContainer, isDark && styles.containerDark]}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 32 }}
+          keyboardShouldPersistTaps="handled"
         >
-          <Text style={[styles.addButtonText, isDark && styles.addButtonTextDark]}>
-            {t("sessionsList.empty.addConnectionButton")}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.setupGuideLink}
-          onPress={() => Linking.openURL(SETUP_GUIDE_URL)}
-          testID="setup-guide-link"
-        >
-          <Text style={styles.setupGuideLinkText}>{t("sessionsList.empty.setupGuideLink")}</Text>
-        </TouchableOpacity>
-        {/* No-server activation path (retention): a fully offline scripted
-            demo, isolated from real connect/session state — see app/demo.tsx. */}
-        <TouchableOpacity
-          style={[styles.tryDemoButton, isDark && styles.tryDemoButtonDark]}
-          onPress={() => router.push("/demo")}
-          testID="try-demo-button"
-        >
-          <Ionicons name="play-circle-outline" size={16} color={isDark ? "#a78bfa" : "#6d28d9"} />
-          <Text style={[styles.tryDemoButtonText, isDark && styles.tryDemoButtonTextDark]}>
-            {t("sessionsList.empty.tryDemoButton")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  // The SSE loop stopped retrying because the server rejected our
-  // credentials (401/403) — no amount of pull-to-refresh fixes that, so
-  // point the user straight at the fix instead of a spinner that never
-  // resolves (issue #76).
-  if (authError) {
-    return (
-      <View style={[styles.emptyContainer, isDark && styles.containerDark]}>
-        <Ionicons name="lock-closed-outline" size={64} color={isDark ? "#444444" : "#cccccc"} />
-        <Text style={[styles.emptyTitle, isDark && styles.textDark]}>{t("sessionsList.empty.authFailedTitle")}</Text>
-        <Text style={[styles.emptySubtitle, isDark && styles.metaDark]}>
-          {t("sessionsList.empty.authFailedSubtitle", { name: activeConnection.name })}
-        </Text>
-        <View style={styles.authErrorButtonRow}>
-          <TouchableOpacity
-            style={[styles.addButton, isDark && styles.addButtonDark]}
-            onPress={() => router.push(`/connection/${activeConnection.id}`)}
-            testID="fix-connection-button"
-          >
-            <Text style={[styles.addButtonText, isDark && styles.addButtonTextDark]}>
-              {t("sessionsList.empty.checkCredentialsButton")}
+          <View style={{ alignItems: "center", marginBottom: 32 }}>
+            <Ionicons name="lock-closed-outline" size={64} color={isDark ? "#444444" : "#cccccc"} />
+            <Text style={[styles.emptyTitle, isDark && styles.textDark]}>
+              {authError ? t("sessionsList.empty.authFailedTitle") : "Вход"}
             </Text>
-          </TouchableOpacity>
+            <Text style={[styles.emptySubtitle, isDark && styles.metaDark]}>
+              {authError
+                ? t("sessionsList.empty.authFailedSubtitle", { name: activeConnection?.name || "devbox" })
+                : `Подключение к ${HARDCODED_SERVER_URL}`}
+            </Text>
+            {!authError && (
+              <Text style={[styles.emptySubtitle, isDark && styles.metaDark, { marginTop: 8, fontSize: 13 }]}>
+                Введите логин и пароль для входа
+              </Text>
+            )}
+          </View>
+
+          <View style={[styles.input, isDark && { backgroundColor: "#1a1a1a" }, { opacity: 0.7, marginBottom: 16 }]}>
+            <Text style={{ color: isDark ? "#888888" : "#666666", fontSize: 14 }} selectable>
+              {HARDCODED_SERVER_URL}
+            </Text>
+          </View>
+
+          <Text style={[styles.label, isDark && styles.labelDark]}>Логин</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.inputDark]}
+            placeholder="username"
+            placeholderTextColor={isDark ? "#666666" : "#999999"}
+            value={loginUsername}
+            onChangeText={setLoginUsername}
+            autoCapitalize="none"
+            autoCorrect={false}
+            testID="login-username-input"
+          />
+
+          <Text style={[styles.label, isDark && styles.labelDark]}>Пароль</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.inputDark]}
+            placeholder="••••••••"
+            placeholderTextColor={isDark ? "#666666" : "#999999"}
+            value={loginPassword}
+            onChangeText={setLoginPassword}
+            secureTextEntry
+            testID="login-password-input"
+          />
+
           <TouchableOpacity
-            style={[styles.addButton, isDark && styles.addButtonDark]}
-            onPress={() => {
-              // authError is cleared inside connect() itself once the retry
-              // attempt starts (see src/stores/events.ts), so a manual
-              // set() here isn't needed — just kick the SSE state machine.
-              reconnect()
-            }}
-            testID="retry-connection-button"
+            style={[styles.addButton, isDark && styles.addButtonDark, { marginTop: 24, alignItems: "center" }]}
+            onPress={handleLogin}
+            disabled={isLoggingIn}
+            testID="login-button"
           >
-            <Text style={[styles.addButtonText, isDark && styles.addButtonTextDark]}>{t("common.retry")}</Text>
+            {isLoggingIn ? (
+              <ActivityIndicator size="small" color={isDark ? "#0a0a0a" : "#ffffff"} />
+            ) : (
+              <Text style={[styles.addButtonText, isDark && styles.addButtonTextDark]}>Войти</Text>
+            )}
           </TouchableOpacity>
-        </View>
-      </View>
+
+          {authError && (
+            <TouchableOpacity
+              style={[styles.setupGuideLink, { marginTop: 16 }]}
+              onPress={() => reconnect()}
+              testID="retry-connection-button"
+            >
+              <Text style={styles.setupGuideLinkText}>{t("common.retry")}</Text>
+            </TouchableOpacity>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
     )
   }
 
@@ -1325,5 +1397,27 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     color: "#888888",
+  },
+  input: {
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+    color: "#0a0a0a",
+  },
+  inputDark: {
+    backgroundColor: "#2a2a2a",
+    color: "#ffffff",
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#0a0a0a",
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  labelDark: {
+    color: "#ffffff",
   },
 })
