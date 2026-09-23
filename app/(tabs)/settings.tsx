@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   Switch,
   StyleSheet,
   useColorScheme,
-  Linking,
   Alert,
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
@@ -21,9 +20,7 @@ import {
   granted as notificationsGranted,
 } from "../../src/lib/notifications"
 import type { Category } from "../../src/lib/notifications"
-import { hasTelemetryConsent, setTelemetryConsent } from "../../src/lib/telemetry"
-import { PRIVACY_POLICY_URL } from "../../src/lib/links"
-import { CURRENT_VERSION, checkForUpdate, type AvailableUpdate } from "../../src/lib/update-check"
+import { CURRENT_VERSION } from "../../src/lib/update-check"
 import type { LocalePreference } from "../../src/lib/i18n/locale-resolve"
 
 function SettingRow({
@@ -78,44 +75,6 @@ export default function SettingsScreen() {
   const { settings, hasBiometrics, updateSettings, lock } = useAuth()
   const { notifications, setNotification, locale, setLocale } = useSettings()
   const [osGranted, setOsGranted] = useState<boolean | null>(null)
-  const [telemetryUpdating, setTelemetryUpdating] = useState(false)
-
-  // Settings is where a user goes to ask "what am I running?". Answer it, and if
-  // a newer build exists say so here too — the banner on the sessions list is
-  // dismissible, this row is not (AGE-110). Uses the same 24h-throttled check,
-  // so opening Settings repeatedly costs no extra requests.
-  const [updateAvailable, setUpdateAvailable] = useState<AvailableUpdate | null>(null)
-  useEffect(() => {
-    let cancelled = false
-    checkForUpdate({ ignoreDismissed: true })
-      .then((result) => {
-        if (!cancelled) setUpdateAvailable(result)
-      })
-      .catch(() => undefined)
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  // Telemetry consent: hasTelemetryConsent() returns null (unknown), true, or false.
-  // We initialise local state from in-memory value; updates call setTelemetryConsent().
-  const [crashReporting, setCrashReporting] = useState<boolean>(hasTelemetryConsent() ?? false)
-
-  const handleCrashReportingToggle = useCallback(
-    async (value: boolean) => {
-      setTelemetryUpdating(true)
-      try {
-        await setTelemetryConsent(value)
-        setCrashReporting(value)
-      } catch {
-        setCrashReporting(hasTelemetryConsent() ?? false)
-        Alert.alert(t("settings.alerts.privacyNotSavedTitle"), t("settings.alerts.privacyNotSavedMessage"))
-      } finally {
-        setTelemetryUpdating(false)
-      }
-    },
-    [t],
-  )
 
   // Check OS permission state on first toggle attempt
   const handleToggle = useCallback(
@@ -143,14 +102,14 @@ export default function SettingsScreen() {
   const localeLabels: Record<LocalePreference, string> = {
     system: t("settings.language.system"),
     en: t("settings.language.en"),
-    "zh-Hans": t("settings.language.zhHans"),
+    ru: t("settings.language.ru"),
   }
 
   const handleLanguagePress = useCallback(() => {
     Alert.alert(t("settings.language.title"), undefined, [
       { text: localeLabels.system, onPress: () => setLocale("system") },
       { text: localeLabels.en, onPress: () => setLocale("en") },
-      { text: localeLabels["zh-Hans"], onPress: () => setLocale("zh-Hans") },
+      { text: localeLabels.ru, onPress: () => setLocale("ru") },
       { text: t("common.cancel"), style: "cancel" },
     ])
   }, [t, setLocale, localeLabels])
@@ -231,31 +190,6 @@ export default function SettingsScreen() {
         )}
       </SettingSection>
 
-      <SettingSection title={t("settings.sections.privacy")} isDark={isDark}>
-        <SettingRow
-          icon="shield-checkmark"
-          label={t("settings.privacy.crashReporting.label")}
-          description={t("settings.privacy.crashReporting.description")}
-          isDark={isDark}
-          right={
-            <Switch
-              value={crashReporting}
-              onValueChange={handleCrashReportingToggle}
-              disabled={telemetryUpdating}
-              trackColor={{ false: "#767577", true: "#22c55e" }}
-            />
-          }
-        />
-        <SettingRow
-          icon="document-text"
-          label={t("settings.privacy.privacyPolicy.label")}
-          description={t("settings.privacy.privacyPolicy.description")}
-          isDark={isDark}
-          onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
-          right={<Ionicons name="open-outline" size={20} color={isDark ? "#666666" : "#999999"} />}
-        />
-      </SettingSection>
-
       <SettingSection title={t("settings.sections.about")} isDark={isDark}>
         <SettingRow
           icon="language"
@@ -268,37 +202,8 @@ export default function SettingsScreen() {
         <SettingRow
           icon="information-circle"
           label={t("settings.about.version")}
-          // Was hard-coded "1.0.0" — wrong for every build ever shipped, and the
-          // one place a user could have checked what they are running while 64%
-          // of the base sat on a four-week-old build (AGE-110).
-          description={
-            updateAvailable
-              ? `${CURRENT_VERSION} → ${updateAvailable.version}`
-              : `${CURRENT_VERSION} · ${t("update.upToDate")}`
-          }
+          description={CURRENT_VERSION}
           isDark={isDark}
-          onPress={updateAvailable ? () => Linking.openURL(updateAvailable.url) : undefined}
-          right={
-            updateAvailable ? (
-              <Ionicons name="arrow-up-circle" size={20} color={isDark ? "#7dd3fc" : "#0369a1"} />
-            ) : undefined
-          }
-        />
-        <SettingRow
-          icon="logo-github"
-          label={t("settings.about.github.label")}
-          description={t("settings.about.github.description")}
-          isDark={isDark}
-          onPress={() => Linking.openURL("https://github.com/anomalyco/opencode")}
-          right={<Ionicons name="open-outline" size={20} color={isDark ? "#666666" : "#999999"} />}
-        />
-        <SettingRow
-          icon="document-text"
-          label={t("settings.about.docs.label")}
-          description={t("settings.about.docs.description")}
-          isDark={isDark}
-          onPress={() => Linking.openURL("https://opencode.ai/docs")}
-          right={<Ionicons name="open-outline" size={20} color={isDark ? "#666666" : "#999999"} />}
         />
       </SettingSection>
 

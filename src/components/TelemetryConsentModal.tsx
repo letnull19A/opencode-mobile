@@ -9,10 +9,9 @@
  * Matches the app's existing Settings screen visual conventions.
  */
 
-import { View, Text, TouchableOpacity, StyleSheet, useColorScheme, Modal, Linking } from "react-native"
+import { View, Text, TouchableOpacity, StyleSheet, useColorScheme, Modal } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useTranslation } from "react-i18next"
-import { PRIVACY_POLICY_URL } from "../lib/links"
 
 interface Props {
   visible: boolean
@@ -69,10 +68,7 @@ export function TelemetryConsentModal({ visible, onAllow, onDecline }: Props) {
             />
           </View>
 
-          {/* Privacy policy link */}
-          <TouchableOpacity onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}>
-            <Text style={styles.privacyLink}>{t("telemetryConsent.privacyLink")}</Text>
-          </TouchableOpacity>
+          {/* Privacy policy link removed */}
 
           {/* Actions */}
           <View style={styles.actions}>

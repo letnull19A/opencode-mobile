@@ -1,33 +1,33 @@
 {
   "common": {
-    "cancel": "Cancel",
-    "ok": "OK",
-    "error": "Error",
-    "delete": "Delete",
-    "retry": "Retry",
-    "save": "Save",
-    "shareReport": "Share report"
+    "cancel": "Отмена",
+    "ok": "ОК",
+    "error": "Ошибка",
+    "delete": "Удалить",
+    "retry": "Повторить",
+    "save": "Сохранить",
+    "shareReport": "Поделиться отчетом"
   },
   "settings": {
     "sections": {
-      "security": "Security",
-      "notifications": "Notifications",
-      "privacy": "Privacy",
-      "about": "About"
+      "security": "Безопасность",
+      "notifications": "Уведомления",
+      "privacy": "Конфиденциальность",
+      "about": "О приложении"
     },
     "security": {
       "biometricOpen": {
-        "label": "Require Biometric to Open",
-        "descriptionEnabled": "Use Face ID or Touch ID to unlock the app",
-        "descriptionUnavailable": "Biometric authentication not available"
+        "label": "Требовать биометрию для открытия",
+        "descriptionEnabled": "Используйте Face ID или Touch ID для разблокировки",
+        "descriptionUnavailable": "Биометрия недоступна"
       },
       "biometricSend": {
-        "label": "Require Biometric to Send",
-        "description": "Authenticate before sending messages"
+        "label": "Требовать биометрию для отправки",
+        "description": "Аутентификация перед отправкой сообщений"
       },
       "lockNow": {
-        "label": "Lock App Now",
-        "description": "Require authentication to reopen"
+        "label": "Заблокировать сейчас",
+        "description": "Требовать аутентификацию для повторного открытия"
       }
     },
     "notifications": {
@@ -35,30 +35,30 @@
     },
     "privacy": {
       "crashReporting": {
-        "label": "Crash Reports & Usage Analytics",
-        "description": "Share anonymous crash reports (Sentry) and usage analytics (PostHog) to help improve OpenCode. Diagnostic reports you share are also delivered to our support inbox. No code or prompts are included."
+        "label": "Отчеты о сбоях и аналитика",
+        "description": "Делитесь анонимными отчетами о сбоях и аналитикой, чтобы помочь улучшить OpenCode."
       },
       "privacyPolicy": {
-        "label": "Privacy Policy",
-        "description": "What data we collect and how"
+        "label": "Политика конфиденциальности",
+        "description": "Какие данные мы собираем"
       }
     },
     "about": {
-      "version": "Version",
+      "version": "Версия",
       "github": {
         "label": "GitHub",
-        "description": "View source code"
+        "description": "Исходный код"
       },
       "docs": {
-        "label": "Documentation",
+        "label": "Документация",
         "description": "Learn how to use OpenCode"
       }
     },
     "language": {
-      "label": "Language",
-      "title": "Choose Language",
-      "system": "System Default",
-      "en": "English",
+      "label": "Язык",
+      "title": "Выберите язык",
+      "system": "Системный",
+      "en": "Английский",
       "ru": "Русский"
     },
     "footer": {
@@ -135,11 +135,11 @@
       },
       "name": "Name",
       "namePlaceholder": "My Server",
-      "serverUrl": "Server URL",
+      "serverUrl": "Адрес сервера",
       "directoryOptional": "Project Directory (Optional)",
       "authentication": "Authentication",
-      "username": "Username",
-      "password": "Password",
+      "username": "Логин",
+      "password": "Пароль",
       "alerts": {
         "enterName": "Please enter a connection name",
         "enterUrl": "Please enter a server URL",
@@ -219,9 +219,9 @@
     }
   },
   "nav": {
-    "sessionsTab": "Sessions",
-    "connectionsTab": "Connections",
-    "settingsTab": "Settings",
+    "sessionsTab": "Сессии",
+    "connectionsTab": "Подключения",
+    "settingsTab": "Настройки",
     "addConnectionTitle": "Add Connection",
     "editConnectionTitle": "Edit Connection"
   },
@@ -246,14 +246,14 @@
   "sessionsList": {
     "untitledSession": "Untitled Session",
     "time": {
-      "justNow": "Just now",
+      "justNow": "Только что",
       "minutesAgo": "{{count}}m ago",
       "hoursAgo": "{{count}}h ago",
       "daysAgo": "{{count}}d ago"
     },
     "filesCount": "{{count}} files",
     "actions": {
-      "rename": "Rename"
+      "rename": "Переименовать"
     },
     "alerts": {
       "renameFailedTitle": "Rename failed",
@@ -318,7 +318,7 @@
   "errorBoundary": {
     "title": "Something went wrong",
     "subtitle": "The app hit an unexpected error. It has been reported automatically. You can share a detailed report to help us fix it faster.",
-    "errorLabel": "Error",
+    "errorLabel": "Ошибка",
     "unknownError": "Unknown error",
     "stackLabel": "Stack",
     "componentLabel": "Component",
@@ -437,7 +437,7 @@
     }
   },
   "demo": {
-    "title": "Demo",
+    "title": "Демо",
     "banner": "Demo — sample conversation, no server connected",
     "ctaTitle": "Like what you see?",
     "ctaSubtitle": "This was a scripted demo. Connect your own opencode server to do this for real.",

@@ -43,8 +43,16 @@ export const useSettings = create<SettingsState>((set, get) => ({
     const raw = await SecureStore.getItemAsync(SETTINGS_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<Settings>
+      // Migrate old zh-Hans locale (removed, now only en/ru) — fallback to system
+      if ((parsed as { locale?: string }).locale === "zh-Hans") {
+        parsed.locale = "system" as LocalePreference
+      }
       // Merge stored settings with defaults so new fields/categories get their default
       const merged = mergeStoredSettings(DEFAULTS, parsed)
+      // Ensure locale is still supported (e.g. after removing zh-Hans)
+      if (!["system", "en", "ru"].includes(merged.locale)) {
+        merged.locale = "system"
+      }
       set({ ...merged, loaded: true })
       setAppLocale(merged.locale)
       return

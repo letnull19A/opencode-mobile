@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, useColorScheme, Linking } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, useColorScheme } from "react-native"
 import { Stack, useRouter } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
 import { useTranslation } from "react-i18next"
 import { MessageBubble, PermissionPrompt } from "../src/components/chat"
 import { buildDemoScript, buildDemoCompletionMessage, buildDemoDenialMessage } from "../src/lib/demo-script"
-import { SETUP_GUIDE_URL } from "../src/lib/links"
 import { track, AnalyticsEvent } from "../src/lib/analytics"
 import {
   demoStepAdvancedProps,
@@ -92,13 +91,7 @@ export default function DemoScreen() {
             >
               <Text style={s.hostedCtaLinkText}>{t("demo.hostedCtaLink")}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={s.setupGuideLink}
-              onPress={() => Linking.openURL(SETUP_GUIDE_URL)}
-              testID="demo-setup-guide-link"
-            >
-              <Text style={s.setupGuideLinkText}>{t("demo.setupGuideLink")}</Text>
-            </TouchableOpacity>
+            {/* Setup guide link removed */}
           </View>
         </ScrollView>
       </View>

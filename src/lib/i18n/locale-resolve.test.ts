@@ -2,12 +2,10 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import { matchSupportedLocale, resolveLocale, FALLBACK_LOCALE } from "./locale-resolve.ts"
 
-test("matchSupportedLocale maps zh variants to zh-Hans", () => {
-  assert.equal(matchSupportedLocale("zh"), "zh-Hans")
-  assert.equal(matchSupportedLocale("zh-CN"), "zh-Hans")
-  assert.equal(matchSupportedLocale("zh-Hans"), "zh-Hans")
-  assert.equal(matchSupportedLocale("zh-Hans-CN"), "zh-Hans")
-  assert.equal(matchSupportedLocale("zh-Hant-TW"), "zh-Hans") // no zh-Hant catalog yet — closest match
+test("matchSupportedLocale maps ru variants to ru", () => {
+  assert.equal(matchSupportedLocale("ru"), "ru")
+  assert.equal(matchSupportedLocale("ru-RU"), "ru")
+  assert.equal(matchSupportedLocale("RU"), "ru") // case-insensitive
 })
 
 test("matchSupportedLocale maps en variants to en", () => {
@@ -23,13 +21,13 @@ test("matchSupportedLocale returns null for unsupported languages", () => {
 })
 
 test("resolveLocale: explicit preference always wins over device tags", () => {
-  assert.equal(resolveLocale("en", ["zh-Hans-CN"]), "en")
-  assert.equal(resolveLocale("zh-Hans", ["en-US"]), "zh-Hans")
+  assert.equal(resolveLocale("en", ["ru-RU"]), "en")
+  assert.equal(resolveLocale("ru", ["en-US"]), "ru")
 })
 
 test("resolveLocale: system preference picks first supported device tag", () => {
-  assert.equal(resolveLocale("system", ["fr-FR", "zh-Hans-CN", "en-US"]), "zh-Hans")
-  assert.equal(resolveLocale("system", ["en-US", "zh-Hans-CN"]), "en")
+  assert.equal(resolveLocale("system", ["fr-FR", "ru-RU", "en-US"]), "ru")
+  assert.equal(resolveLocale("system", ["en-US", "ru-RU"]), "en")
 })
 
 test("resolveLocale: system preference falls back when nothing matches", () => {

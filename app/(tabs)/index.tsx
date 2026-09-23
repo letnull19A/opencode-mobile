@@ -29,7 +29,6 @@ import { DirectorySwitcher, DirectoryBrowserSheet } from "../../src/components/c
 import { groupByDirectory } from "../../src/lib/session-grouping"
 import { UpdateBanner } from "../../src/components/UpdateBanner"
 import { nameOf } from "../../src/lib/path-utils"
-import { SETUP_GUIDE_URL } from "../../src/lib/links"
 
 function formatTime(timestamp: number, t: (key: string, opts?: Record<string, unknown>) => string): string {
   const date = new Date(timestamp)
