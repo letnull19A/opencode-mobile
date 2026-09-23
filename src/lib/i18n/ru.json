@@ -223,6 +223,15 @@
         "deleteTitle": "Delete Connection",
         "deleteMessage": "Are you sure you want to delete \"{{name}}\"?"
       }
+    },
+    "status": {
+      "title": "Статус соединения",
+      "connected": "Подключено",
+      "authError": "Ошибка авторизации",
+      "offline": "Не в сети",
+      "ping": "Пинг",
+      "unreachable": "Недоступен",
+      "refresh": "Обновить"
     }
   },
   "nav": {

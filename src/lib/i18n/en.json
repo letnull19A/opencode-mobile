@@ -223,6 +223,15 @@
         "deleteTitle": "Delete Connection",
         "deleteMessage": "Are you sure you want to delete \"{{name}}\"?"
       }
+    },
+    "status": {
+      "title": "Connection Status",
+      "connected": "Connected",
+      "authError": "Authentication failed",
+      "offline": "Offline",
+      "ping": "Ping",
+      "unreachable": "Unreachable",
+      "refresh": "Refresh"
     }
   },
   "nav": {
