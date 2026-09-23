@@ -107,17 +107,18 @@ export const useConnections = create<ConnectionsState>((set, get) => ({
         await SecureStore.setItemAsync(CONNECTIONS_KEY, JSON.stringify(connections))
       }
 
-      // Auto-create default hardcoded connection if none exists
-      if (connections.length === 0) {
-        const id = generateId()
-        const defaultConn: ServerConnection = {
-          id,
-          name: "Основной сервер",
-          type: "cloud",
-          url: HARDCODED_SERVER_URL,
-          active: true,
-        }
-        connections = [defaultConn]
+      // Clean up auto-created empty connection from previous hardcode migration
+      // (it had no credentials and immediately caused authError before user
+      // ever saw the login form). Remove it so first launch shows clean login
+      // without "Ошибка авторизации".
+      if (
+        connections.length === 1 &&
+        connections[0].name === "Основной сервер" &&
+        !connections[0].username
+      ) {
+        const staleId = connections[0].id
+        await SecureStore.deleteItemAsync(`${PASSWORDS_PREFIX}${staleId}`)
+        connections = []
         await SecureStore.setItemAsync(CONNECTIONS_KEY, JSON.stringify(connections))
       }
 
