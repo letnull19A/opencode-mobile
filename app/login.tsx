@@ -142,7 +142,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </ScrollView>
       <View style={[styles.footer, { paddingBottom: Math.max(8, insets.bottom) }]}>
-        <SvgXml xml={logoXml} width={198} height={23} />
+        <SvgXml xml={logoXml} width={178} height={21} />
       </View>
     </KeyboardAvoidingView>
   )
