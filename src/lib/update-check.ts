@@ -28,7 +28,7 @@
 
 import { Platform } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import appJson from "../../app.json"
+import pkg from "../../package.json"
 import {
   DISMISSED_KEY,
   resolveUpdate,
@@ -38,8 +38,8 @@ import {
 
 export type { AvailableUpdate }
 
-/** Same source Sentry uses for `release`, so the two always agree. */
-export const CURRENT_VERSION = (appJson as { expo?: { version?: string } }).expo?.version ?? "unknown"
+/** Single source of truth — package.json per user request. */
+export const CURRENT_VERSION = (pkg as { version?: string }).version ?? "unknown"
 
 const RELEASES_API = "https://api.github.com/repos/dzianisv/opencode-mobile/releases/latest"
 const RELEASES_PAGE = "https://github.com/dzianisv/opencode-mobile/releases/latest"
@@ -75,19 +75,13 @@ async function fetchLatestRelease(): Promise<AvailableUpdate | null> {
  * Returns the update the user should be told about, or null for "stay quiet".
  * Safe to call on every foreground: the 24h throttle lives in the policy.
  */
-export async function checkForUpdate(options?: {
+export async function checkForUpdate(_options?: {
   force?: boolean
   /** Settings passes true: a dismissal silences the banner, not the About row. */
   ignoreDismissed?: boolean
 }): Promise<AvailableUpdate | null> {
-  if (Platform.OS !== "android") return null
-  return resolveUpdate({
-    storage,
-    fetchLatest: fetchLatestRelease,
-    currentVersion: CURRENT_VERSION,
-    force: options?.force,
-    ignoreDismissed: options?.ignoreDismissed,
-  })
+  // GitHub links removed per user request — no update check
+  return null
 }
 
 /** "Not now" — remembered for this version only, never re-asked for it. */

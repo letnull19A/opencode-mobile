@@ -24,11 +24,10 @@ import { AnalyticsEvent, track } from "../../src/lib/analytics"
 import { submitWaitlistSignup, buildWaitlistMailtoUrl, needsManualEscapeHatch, type QueuedSignup } from "../../src/lib/waitlist"
 import { flushPendingSignups, queuePendingSignup, readPendingSignups, dropPendingSignup } from "../../src/lib/waitlist-queue-storage"
 import { HARDCODED_SERVER_URL } from "../../src/lib/server-config"
-import appJson from "../../app.json"
+import pkg from "../../package.json"
 
-// Same read as sentry.ts: app.json is the single source of the user-visible
-// version (package.json/gradle are kept in parity by `npm run check:versions`).
-const APP_VERSION = (appJson as { expo?: { version?: string } }).expo?.version ?? "unknown"
+// Single source of truth — package.json
+const APP_VERSION = (pkg as { version?: string }).version ?? "unknown"
 
 export default function AddConnectionScreen() {
   const colorScheme = useColorScheme()

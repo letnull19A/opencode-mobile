@@ -6,17 +6,22 @@ const gradle = await readFile("android/app/build.gradle", "utf8");
 
 const name = gradle.match(/^\s*versionName\s+"([^"]+)"/m)?.[1];
 const code = Number(gradle.match(/^\s*versionCode\s+(\d+)/m)?.[1]);
-const expectedName = app.expo.version;
+// Single source of truth is package.json — app.json and gradle must match it.
+// app.config.js also derives expo.version from package.json at runtime, but
+// the file app.json is still checked so `npx expo prebuild` without
+// app.config.js (or a stale file) doesn't silently ship an old version.
+const expectedName = pkg.version;
 const expectedCode = app.expo.android.versionCode;
+const appVersion = app.expo.version;
 
 const errors = [];
 
-if (pkg.version !== expectedName) {
-  errors.push(`package.json version ${pkg.version} != app.json version ${expectedName}`);
+if (appVersion !== expectedName) {
+  errors.push(`app.json version ${appVersion} != package.json version ${expectedName} — run: node scripts/sync-version.mjs`);
 }
 
 if (name !== expectedName) {
-  errors.push(`Gradle versionName ${name ?? "missing"} != app.json version ${expectedName}`);
+  errors.push(`Gradle versionName ${name ?? "missing"} != package.json version ${expectedName}`);
 }
 
 if (code !== expectedCode) {

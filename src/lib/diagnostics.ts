@@ -5,7 +5,7 @@ import { Platform, Share } from "react-native"
 import * as Clipboard from "expo-clipboard"
 import * as Device from "expo-device"
 import * as SecureStore from "expo-secure-store"
-import appJson from "../../app.json"
+import pkg from "../../package.json"
 import { log, formatLogLines } from "./logbuffer"
 import { type Classification, type ProbeAttempt, type ParsedUrl, parseUrl, classify } from "./diagnostics-classify"
 import { chatwootConfigured, sendSupportReport } from "./chatwoot"
@@ -112,7 +112,7 @@ export async function probeConnection(url: string, auth?: { username: string; pa
       platform: Platform.OS,
       osVersion: String(Platform.Version),
       model: Device.modelName || "unknown",
-      appVersion: (appJson as { expo?: { version?: string } }).expo?.version || "unknown",
+      appVersion: (pkg as { version?: string }).version || "unknown",
     },
     timestamp: new Date().toISOString(),
   }
@@ -171,7 +171,7 @@ export function buildCrashReport(error: unknown, source: "react-boundary" | "glo
       platform: Platform.OS,
       osVersion: String(Platform.Version),
       model: Device.modelName || "unknown",
-      appVersion: (appJson as { expo?: { version?: string } }).expo?.version || "unknown",
+      appVersion: (pkg as { version?: string }).version || "unknown",
     },
     timestamp: new Date().toISOString(),
   }

@@ -10,6 +10,7 @@
     "android": "expo run:android",
     "typecheck": "tsc --noEmit",
     "check:versions": "node scripts/check-version-parity.mjs",
+    "sync:version": "node scripts/sync-version.mjs",
     "test": "node --test 'src/**/*.test.ts' 'scripts/*.test.mjs'"
   },
   "dependencies": {
