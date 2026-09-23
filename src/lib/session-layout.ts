@@ -7,9 +7,14 @@ const COMPOSER_VERTICAL_PADDING = 20
 // KeyboardAvoidingView measures its frame in window coordinates while Android
 // reports the IME in screen coordinates under edge-to-edge. The top inset
 // reconciles those origins without changing iOS's established offset.
+// On Android the Stack header (~56dp) sits above the KeyboardAvoidingView but
+// is not part of its window-coordinate origin, so we must include it; otherwise
+// the computed padding is short by one header height and the composer stays
+// partially hidden behind the IME (user report: "only a gap visible").
+const ANDROID_HEADER_HEIGHT = 56
 export function keyboardVerticalOffset(platform: string, insetTop: number): number {
   if (platform === "ios") return IOS_KEYBOARD_VERTICAL_OFFSET
-  return Math.max(0, insetTop)
+  return Math.max(0, insetTop) + ANDROID_HEADER_HEIGHT
 }
 
 export function composerMaxHeight(

@@ -10,9 +10,9 @@ import {
 } from "./session-layout.ts"
 
 test("Android keyboard offset reconciles edge-to-edge screen and window coordinates", () => {
-  assert.equal(keyboardVerticalOffset("android", 48.857), 48.857)
-  assert.equal(keyboardVerticalOffset("android", 0), 0)
-  assert.equal(keyboardVerticalOffset("android", -20), 0)
+  assert.equal(keyboardVerticalOffset("android", 48.857), 104.857)
+  assert.equal(keyboardVerticalOffset("android", 0), 56)
+  assert.equal(keyboardVerticalOffset("android", -20), 56)
 })
 
 test("iOS retains its established keyboard offset", () => {
