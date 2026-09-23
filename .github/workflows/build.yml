@@ -78,6 +78,15 @@ jobs:
           echo "SENTRY_DIST=${VERSION}" >> "$GITHUB_ENV"
           echo "Sentry release=opencode-mobile@${VERSION} dist=${VERSION}"
 
+      - name: Disable Sentry upload when secrets missing
+        run: |
+          if [ -z "${{ secrets.SENTRY_AUTH_TOKEN }}" ] || [ -z "${{ secrets.SENTRY_ORG }}" ] || [ -z "${{ secrets.SENTRY_PROJECT }}" ]; then
+            echo "SENTRY_DISABLE_AUTO_UPLOAD=true" >> "$GITHUB_ENV"
+            echo "::notice::Sentry upload disabled — missing SENTRY_* secrets (fork without Sentry config)"
+          else
+            echo "Sentry upload enabled"
+          fi
+
       - name: Expo prebuild
         run: npx expo prebuild --platform android --no-install
 
