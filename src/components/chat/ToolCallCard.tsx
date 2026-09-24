@@ -348,7 +348,6 @@ export function ToolCallCard({ tool, isDark }: Props) {
         </View>
         <View style={s.headerRight}>
           {status === "running" && <ActivityIndicator size="small" color={color} />}
-          {status === "completed" && <Ionicons name="checkmark-circle" size={16} color="#22c55e" />}
           {status === "error" && <Ionicons name="close-circle" size={16} color="#ef4444" />}
           {hasDetail && (
             <Ionicons
@@ -377,13 +376,10 @@ export function ToolCallCard({ tool, isDark }: Props) {
 const s = StyleSheet.create({
   card: {
     backgroundColor: "transparent",
-    paddingHorizontal: 0,
-    paddingVertical: 4,
+    padding: 0,
     borderRadius: 0,
-    marginTop: 4,
-    marginHorizontal: -12,
+    marginTop: 8,
     borderWidth: 0,
-    borderColor: "transparent",
   },
   cardDark: { backgroundColor: "transparent", borderColor: "transparent" },
   cardError: { borderColor: "#fecaca" },
@@ -421,23 +417,24 @@ const s = StyleSheet.create({
     fontSize: 12,
     fontFamily: mono,
     color: "#0a0a0a",
-    backgroundColor: "#f5f5f5",
-    paddingHorizontal: 8,
+    backgroundColor: "transparent",
+    paddingHorizontal: 0,
     paddingVertical: 4,
-    borderRadius: 4,
+    borderRadius: 0,
     overflow: "hidden",
   },
-  detailFileDark: { color: "#e5e5e5", backgroundColor: "#1a1a1a" },
+  detailFileDark: { color: "#e5e5e5", backgroundColor: "transparent" },
   detailMeta: { fontSize: 12, color: "#666666", lineHeight: 18 },
   detailMetaDark: { color: "#888888" },
 
   // Code block
   codeBlock: {
-    backgroundColor: "#f8f8f8",
-    borderRadius: 6,
-    padding: 10,
+    backgroundColor: "transparent",
+    borderRadius: 0,
+    paddingHorizontal: 0,
+    paddingVertical: 10,
   },
-  codeBlockDark: { backgroundColor: "#1a1a1a" },
+  codeBlockDark: { backgroundColor: "transparent" },
   codePre: {
     fontSize: 12,
     fontFamily: mono,

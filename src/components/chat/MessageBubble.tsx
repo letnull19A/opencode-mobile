@@ -143,9 +143,9 @@ const s = StyleSheet.create({
     width: "100%",
     marginLeft: 0,
     marginRight: 0,
-    marginBottom: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    marginBottom: 3,
+    paddingHorizontal: 0,
+    paddingVertical: 8,
   },
   assistantDark: { backgroundColor: "transparent" },
 
