@@ -48,17 +48,14 @@ export const MessageBubble = memo(
         ]}
         testID={`chat-bubble-${message.role}`}
       >
-        {/* Role indicator */}
-        <View style={s.header}>
-          <Ionicons
-            name={isUser ? "person" : "sparkles"}
-            size={14}
-            color={isDark ? "#888888" : "#666666"}
-          />
-          <Text style={[s.role, isUser && s.roleUser, isDark && s.textWhite]}>{isUser ? "You" : "Assistant"}</Text>
-          {message.model && <Text style={[s.modelTag, isDark && s.modelTagDark]}>{message.model.modelID}</Text>}
-          {!isUser && message.modelID && <Text style={[s.modelTag, isDark && s.modelTagDark]}>{message.modelID}</Text>}
-        </View>
+        {/* Role indicator — only for user, assistant header removed per request */}
+        {isUser && (
+          <View style={s.header}>
+            <Ionicons name="person" size={14} color={isDark ? "#888888" : "#666666"} />
+            <Text style={[s.role, s.roleUser, isDark && s.textWhite]}>You</Text>
+            {message.model && <Text style={[s.modelTag, isDark && s.modelTagDark]}>{message.model.modelID}</Text>}
+          </View>
+        )}
 
         {/* Image attachments */}
         {fileParts.length > 0 && (
@@ -101,13 +98,19 @@ export const MessageBubble = memo(
           <ToolCallCard key={tool.id} tool={tool} isDark={isDark} />
         ))}
 
-        {/* Tokens/cost for assistant messages */}
-        {!isUser && message.tokens && (
-          <Text style={[s.tokens, isDark && s.tokensDark]}>
-            {message.tokens.input + message.tokens.output} tokens
-            {message.cost ? ` · $${message.cost.toFixed(4)}` : ""}
-          </Text>
-        )}
+        {/* Model + tokens/cost for assistant messages — model moved from header, same style as tokens */}
+        {!isUser &&
+          (() => {
+            const modelName = message.model?.modelID || message.modelID || ""
+            const hasTokens = !!message.tokens
+            const hasModel = !!modelName
+            if (!hasTokens && !hasModel) return null
+            const parts: string[] = []
+            if (hasModel) parts.push(modelName.split("/").pop() || modelName)
+            if (hasTokens) parts.push(`${message.tokens!.input + message.tokens!.output} tokens`)
+            if (message.cost) parts.push(`$${message.cost.toFixed(4)}`)
+            return <Text style={[s.tokens, isDark && s.tokensDark]}>{parts.join(" · ")}</Text>
+          })()}
       </TouchableOpacity>
     )
   },
@@ -133,7 +136,7 @@ const s = StyleSheet.create({
   bubble: { marginBottom: 16, padding: 12, borderRadius: 12, maxWidth: "100%" },
   user: { backgroundColor: "#f5f5f5", marginLeft: 32 },
   userDark: { backgroundColor: "#1a1a1a" },
-  assistant: { backgroundColor: "transparent" },
+  assistant: { backgroundColor: "transparent", alignSelf: "stretch", width: "100%", marginLeft: 0, marginRight: 0 },
   assistantDark: { backgroundColor: "transparent" },
 
   header: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 8 },
