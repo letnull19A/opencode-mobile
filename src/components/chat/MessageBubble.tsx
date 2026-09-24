@@ -53,7 +53,7 @@ export const MessageBubble = memo(
           <Ionicons
             name={isUser ? "person" : "sparkles"}
             size={14}
-            color={isUser ? (isDark ? "#ffffff" : "#0a0a0a") : "#8b5cf6"}
+            color={isDark ? "#888888" : "#666666"}
           />
           <Text style={[s.role, isUser && s.roleUser, isDark && s.textWhite]}>{isUser ? "You" : "Assistant"}</Text>
           {message.model && <Text style={[s.modelTag, isDark && s.modelTagDark]}>{message.model.modelID}</Text>}
@@ -133,8 +133,8 @@ const s = StyleSheet.create({
   bubble: { marginBottom: 16, padding: 12, borderRadius: 12, maxWidth: "100%" },
   user: { backgroundColor: "#f5f5f5", marginLeft: 32 },
   userDark: { backgroundColor: "#1a1a1a" },
-  assistant: { backgroundColor: "#f0f0ff" },
-  assistantDark: { backgroundColor: "#1a1a2e" },
+  assistant: { backgroundColor: "transparent" },
+  assistantDark: { backgroundColor: "transparent" },
 
   header: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 8 },
   role: { fontSize: 13, fontWeight: "600", color: "#666666" },

@@ -84,7 +84,7 @@ export function QuestionPrompt({ request, isDark, onReply, onReject }: Props) {
   return (
     <View style={[s.card, isDark && s.cardDark]}>
       <View style={s.header}>
-        <Ionicons name="chatbubble-ellipses-outline" size={18} color="#8b5cf6" />
+        <Ionicons name="chatbubble-ellipses-outline" size={18} color={isDark ? "#888888" : "#666666"} />
         <Text style={[s.title, isDark && s.textWhite]}>{q.header || t("chat.questionPrompt.headerFallback")}</Text>
       </View>
       <ScrollView {...QUESTION_BODY_SCROLL_PROPS} style={s.body} contentContainerStyle={s.options} testID="question-options-scroll">
@@ -102,7 +102,15 @@ export function QuestionPrompt({ request, isDark, onReply, onReject }: Props) {
               ]}
               onPress={() => toggleOption(opt.label)}
             >
-              <Text style={[s.optionLabel, isDark && s.textWhite, selected && s.optionLabelSelected]}>{opt.label}</Text>
+              <Text
+                style={[
+                  s.optionLabel,
+                  isDark && s.textWhite,
+                  selected && (isDark ? s.optionLabelSelectedDark : s.optionLabelSelected),
+                ]}
+              >
+                {opt.label}
+              </Text>
               {opt.description ? <Text style={[s.optionDesc, isDark && s.metaDark]}>{opt.description}</Text> : null}
             </TouchableOpacity>
           )
@@ -121,12 +129,12 @@ export function QuestionPrompt({ request, isDark, onReply, onReject }: Props) {
                 autoFocus
               />
               <TouchableOpacity onPress={submitCustom} style={s.customSubmit}>
-                <Ionicons name="send" size={18} color="#8b5cf6" />
+                <Ionicons name="send" size={18} color={isDark ? "#ffffff" : "#0a0a0a"} />
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity style={[s.option, isDark && s.optionDark]} onPress={() => setShowCustom(true)}>
-              <Text style={[s.optionLabel, { color: "#8b5cf6" }]}>{t("chat.questionPrompt.customAnswerLabel")}</Text>
+              <Text style={[s.optionLabel, { color: isDark ? "#ffffff" : "#0a0a0a" }]}>{t("chat.questionPrompt.customAnswerLabel")}</Text>
             </TouchableOpacity>
           ))}
       </ScrollView>
@@ -146,7 +154,7 @@ export function QuestionPrompt({ request, isDark, onReply, onReject }: Props) {
               }
             }}
           >
-            <Text style={s.submitText}>
+            <Text style={[s.submitText, isDark && s.submitTextDark]}>
               {current < request.questions.length - 1 ? t("chat.questionPrompt.next") : t("chat.questionPrompt.submit")}
             </Text>
           </TouchableOpacity>
@@ -161,14 +169,14 @@ const s = StyleSheet.create({
     flexShrink: 1,
     margin: 12,
     padding: 16,
-    backgroundColor: "#f5f3ff",
+    backgroundColor: "#f5f5f5",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ede9fe",
+    borderColor: "#e5e5e5",
   },
-  cardDark: { backgroundColor: "#1a1a2e", borderColor: "#2a2a3e" },
+  cardDark: { backgroundColor: "#1a1a1a", borderColor: "#2a2a2a" },
   header: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 },
-  title: { fontSize: 15, fontWeight: "600", color: "#6d28d9" },
+  title: { fontSize: 15, fontWeight: "600", color: "#0a0a0a" },
   textWhite: { color: "#ffffff" },
   body: { flexShrink: 1 },
   question: { fontSize: 14, lineHeight: 20, color: "#0a0a0a" },
@@ -183,10 +191,11 @@ const s = StyleSheet.create({
     borderColor: "#e5e5e5",
   },
   optionDark: { backgroundColor: "#2a2a2a", borderColor: "#3a3a3a" },
-  optionSelected: { borderColor: "#8b5cf6", backgroundColor: "#f5f3ff" },
-  optionSelectedDark: { borderColor: "#8b5cf6", backgroundColor: "#2a1a3e" },
+  optionSelected: { borderColor: "#0a0a0a", backgroundColor: "#e5e5e5" },
+  optionSelectedDark: { borderColor: "#ffffff", backgroundColor: "#2a2a2a" },
   optionLabel: { fontSize: 14, fontWeight: "600", color: "#0a0a0a" },
-  optionLabelSelected: { color: "#6d28d9" },
+  optionLabelSelected: { color: "#0a0a0a" },
+  optionLabelSelectedDark: { color: "#ffffff" },
   optionDesc: { fontSize: 12, color: "#666666", marginTop: 2 },
 
   customRow: { flexDirection: "row", gap: 8 },
@@ -206,7 +215,8 @@ const s = StyleSheet.create({
 
   footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 12 },
   dismiss: { fontSize: 14, color: "#999999" },
-  submitBtn: { backgroundColor: "#8b5cf6", paddingHorizontal: 20, paddingVertical: 10, borderRadius: 8 },
-  submitBtnDark: { backgroundColor: "#7c3aed" },
+  submitBtn: { backgroundColor: "#0a0a0a", paddingHorizontal: 20, paddingVertical: 10, borderRadius: 8 },
+  submitBtnDark: { backgroundColor: "#ffffff" },
   submitText: { color: "#ffffff", fontWeight: "600", fontSize: 14 },
+  submitTextDark: { color: "#0a0a0a" },
 })

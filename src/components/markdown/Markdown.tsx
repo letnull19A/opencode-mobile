@@ -64,7 +64,7 @@ const lightTheme = {
   h1: { fontSize: 22, fontWeight: "700" as const, color: "#0a0a0a", marginBottom: 8, marginTop: 12 },
   h2: { fontSize: 19, fontWeight: "600" as const, color: "#0a0a0a", marginBottom: 6, marginTop: 10 },
   h3: { fontSize: 16, fontWeight: "600" as const, color: "#0a0a0a", marginBottom: 4, marginTop: 8 },
-  link: { color: "#8b5cf6" },
+  link: { color: "#2563eb" },
   blockquote: {
     backgroundColor: "transparent",
     borderLeftWidth: 3,
@@ -74,8 +74,8 @@ const lightTheme = {
     marginVertical: 4,
   },
   code: {
-    backgroundColor: "#e8e5f0",
-    color: "#6d28d9",
+    backgroundColor: "#f5f5f5",
+    color: "#0a0a0a",
     fontFamily: mono,
     fontSize: 13,
     paddingHorizontal: 5,
@@ -83,8 +83,8 @@ const lightTheme = {
     borderRadius: 4,
   },
   codespan: {
-    backgroundColor: "#e8e5f0",
-    color: "#6d28d9",
+    backgroundColor: "#f5f5f5",
+    color: "#0a0a0a",
     fontFamily: mono,
     fontSize: 13,
     paddingHorizontal: 4,
@@ -106,20 +106,20 @@ const darkTheme = {
   h1: { ...lightTheme.h1, color: "#ffffff" },
   h2: { ...lightTheme.h2, color: "#ffffff" },
   h3: { ...lightTheme.h3, color: "#ffffff" },
-  link: { color: "#a78bfa" },
+  link: { color: "#60a5fa" },
   blockquote: {
     ...lightTheme.blockquote,
     borderLeftColor: "#4a4a5a",
   },
   code: {
     ...lightTheme.code,
-    backgroundColor: "#2a2040",
-    color: "#c4b5fd",
+    backgroundColor: "#1a1a1a",
+    color: "#e5e5e5",
   },
   codespan: {
     ...lightTheme.codespan,
-    backgroundColor: "#2a2040",
-    color: "#c4b5fd",
+    backgroundColor: "#1a1a1a",
+    color: "#e5e5e5",
   },
   hr: { ...lightTheme.hr, backgroundColor: "#2a2a2a" },
 }

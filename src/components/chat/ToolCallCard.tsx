@@ -181,7 +181,7 @@ function WebfetchDetail({ input, isDark }: { input: unknown; isDark: boolean }) 
   return (
     <View style={s.detailSection}>
       {typeof url === "string" && (
-        <Text style={[s.detailFile, isDark && s.detailFileDark, { color: "#8b5cf6" }]} selectable numberOfLines={3}>
+        <Text style={[s.detailFile, isDark && s.detailFileDark]} selectable numberOfLines={3}>
           {url}
         </Text>
       )}
@@ -418,14 +418,14 @@ const s = StyleSheet.create({
   detailFile: {
     fontSize: 12,
     fontFamily: mono,
-    color: "#6d28d9",
-    backgroundColor: "#f5f3ff",
+    color: "#0a0a0a",
+    backgroundColor: "#f5f5f5",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
     overflow: "hidden",
   },
-  detailFileDark: { color: "#a78bfa", backgroundColor: "#1a1a2e" },
+  detailFileDark: { color: "#e5e5e5", backgroundColor: "#1a1a1a" },
   detailMeta: { fontSize: 12, color: "#666666", lineHeight: 18 },
   detailMetaDark: { color: "#888888" },
 
@@ -443,7 +443,7 @@ const s = StyleSheet.create({
     lineHeight: 18,
   },
   codePteDark: { color: "#e5e5e5" },
-  codePrompt: { color: "#8b5cf6", fontWeight: "700" },
+  codePrompt: { color: "#666666", fontWeight: "700" },
 
   // Todo
   todoRow: {

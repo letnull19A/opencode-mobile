@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
   },
   copyBtn: {
     fontSize: 11,
-    color: "#8b5cf6",
+    color: "#0a0a0a",
     fontWeight: "600",
   },
   copyBtnDark: {
-    color: "#a78bfa",
+    color: "#ffffff",
   },
   codeScroll: {
     padding: 12,
