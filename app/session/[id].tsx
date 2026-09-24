@@ -275,17 +275,19 @@ export default function SessionScreen() {
     flatListRef.current?.scrollToOffset({ offset: 0, animated })
   }, [])
 
-  // Auto-scroll: keep indicator visible at bottom of messages block
-  const indicatorStatus = useEvents((s) => (currentSession ? s.sessionStatus[currentSession.id] : undefined))
-  const indicatorText = useEvents((s) => (currentSession ? s.statusText[currentSession.id] : undefined))
-
+  // Auto-scroll when thinking/process indicator appears or updates — it lives
+  // in the fixed-height footer at the bottom of the messages block, so the
+  // user always sees it without manual scroll.
+  const sessionStatus = useEvents((s) => (sessionID ? s.sessionStatus[sessionID] : undefined))
+  const statusText = useEvents((s) => (sessionID ? s.statusText[sessionID] : undefined))
   useEffect(() => {
-    if (indicatorStatus?.type !== "idle" || indicatorText) {
+    if (sessionStatus?.type === "busy" || sessionStatus?.type === "retry" || statusText) {
       scrollToBottom(true)
     }
-  }, [indicatorStatus, indicatorText, scrollToBottom])
-
+  }, [sessionStatus, statusText, scrollToBottom])
   useEffect(() => {
+    // New assistant text or tool output also implies the indicator may have
+    // updated — keep the viewport pinned to the bottom where the indicator lives.
     if (messageData.length > 0) scrollToBottom(true)
   }, [messageData.length, scrollToBottom])
 
@@ -742,8 +744,8 @@ export default function SessionScreen() {
                 <Ionicons name="chevron-down" size={24} color={isDark ? "#ffffff" : "#0a0a0a"} />
               </TouchableOpacity>
             )}
-            {/* Status indicator — always at bottom of messages block, fixed height, auto-scrolls */}
-            <View style={s.statusContainer}>
+            {/* Indicator fixed at bottom of messages block — always 32px, auto-scrolls */}
+            <View style={s.indicatorContainer}>
               {currentSession && <StatusIndicator sessionID={currentSession.id} isDark={isDark} />}
             </View>
           </View>
@@ -897,7 +899,7 @@ const s = StyleSheet.create({
   containerDark: { backgroundColor: "#0a0a0a" },
   loading: { flex: 1, justifyContent: "center", alignItems: "center" },
   listWrap: { flex: 1, position: "relative" },
-  statusContainer: { height: 36, justifyContent: "center" },
+  indicatorContainer: { height: 32, justifyContent: "center" },
 
   // Messages
   messageList: { padding: 16, paddingBottom: 8 },
