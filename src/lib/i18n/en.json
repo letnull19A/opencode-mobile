@@ -240,7 +240,8 @@
     "settingsTab": "Settings",
     "addConnectionTitle": "Add Connection",
     "editConnectionTitle": "Edit Connection",
-    "accountTab": "Account"
+    "accountTab": "Account",
+    "tasksTab": "Tasks"
   },
   "connectionsList": {
     "activeBadge": "Active",
@@ -415,7 +416,10 @@
       "noSubfolders": "No subfolders here",
       "enterPathHint": "Enter a path above to start browsing",
       "useFolderButton": "Use {{folder}}",
-      "thisFolderFallback": "this folder"
+      "thisFolderFallback": "this folder",
+      "manualToggle": "Enter path manually",
+      "rootLabel": "root",
+      "mockBadge": "Mock"
     },
     "reasoningBlock": {
       "label": "Thinking"
@@ -476,5 +480,31 @@
     "server": "Server",
     "logout": "Log Out",
     "notLoggedIn": "Not logged in"
+  },
+  "project": {
+    "new": {
+      "title": "New project",
+      "subtitle": "Create a local project or clone from GitHub",
+      "cloneTitle": "Clone repository",
+      "cloneHint": "GitHub · stub, no backend yet",
+      "myProjects": "My projects",
+      "empty": "No projects yet — clone your first repo",
+      "serverFolderLabel": "Server folder",
+      "serverFolderUnknown": "Server default",
+      "change": "Change"
+    },
+    "clone": {
+      "title": "Clone repository",
+      "searchPlaceholder": "Search repositories…",
+      "private": "Private",
+      "empty": "Nothing found",
+      "targetLabel": "Clone into"
+    }
+  },
+  "tasks": {
+    "working": "Working…",
+    "retrying": "Retrying…",
+    "empty": "No active tasks",
+    "emptyHint": "Chats where the agent is working will appear here"
   }
 }

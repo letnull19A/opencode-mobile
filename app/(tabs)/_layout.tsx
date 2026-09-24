@@ -214,6 +214,10 @@ export default function TabLayout() {
   const colorScheme = useColorScheme()
   const isDark = colorScheme === "dark"
   const { t } = useTranslation()
+  // Badge with the number of sessions where the agent is working right now.
+  const busyCount = useEvents((s) =>
+    Object.values(s.sessionStatus).filter((st) => st.type === "busy" || st.type === "retry").length,
+  )
 
   return (
     <Tabs
@@ -236,6 +240,14 @@ export default function TabLayout() {
           title: t("nav.sessionsTab"),
           tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles-outline" size={size} color={color as unknown as string} />,
           headerRight: () => <ConnectionBadge isDark={isDark} />,
+        }}
+      />
+      <Tabs.Screen
+        name="tasks"
+        options={{
+          title: t("nav.tasksTab"),
+          tabBarIcon: ({ color, size }) => <Ionicons name="pulse-outline" size={size} color={color as unknown as string} />,
+          tabBarBadge: busyCount > 0 ? busyCount : undefined,
         }}
       />
       <Tabs.Screen

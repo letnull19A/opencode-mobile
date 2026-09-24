@@ -240,7 +240,8 @@
     "settingsTab": "Настройки",
     "addConnectionTitle": "Add Connection",
     "editConnectionTitle": "Edit Connection",
-    "accountTab": "Аккаунт"
+    "accountTab": "Аккаунт",
+    "tasksTab": "Задачи"
   },
   "connectionsList": {
     "activeBadge": "Active",
@@ -415,7 +416,10 @@
       "noSubfolders": "No subfolders here",
       "enterPathHint": "Enter a path above to start browsing",
       "useFolderButton": "Use {{folder}}",
-      "thisFolderFallback": "this folder"
+      "thisFolderFallback": "this folder",
+      "manualToggle": "Ввести путь вручную",
+      "rootLabel": "корень",
+      "mockBadge": "Мок"
     },
     "reasoningBlock": {
       "label": "Thinking"
@@ -476,5 +480,31 @@
     "server": "Сервер",
     "logout": "Выйти",
     "notLoggedIn": "Не авторизован"
+  },
+  "project": {
+    "new": {
+      "title": "Новый проект",
+      "subtitle": "Создайте локальный проект или клонируйте с GitHub",
+      "cloneTitle": "Клонировать репозиторий",
+      "cloneHint": "GitHub · заготовка, бэкенда пока нет",
+      "myProjects": "Мои проекты",
+      "empty": "Проектов пока нет — клонируйте первый репозиторий",
+      "serverFolderLabel": "Папка на сервере",
+      "serverFolderUnknown": "По умолчанию",
+      "change": "Изменить"
+    },
+    "clone": {
+      "title": "Клонировать репозиторий",
+      "searchPlaceholder": "Поиск репозиториев…",
+      "private": "Приватный",
+      "empty": "Ничего не найдено",
+      "targetLabel": "Клонировать в"
+    }
+  },
+  "tasks": {
+    "working": "Выполняется…",
+    "retrying": "Повторная попытка…",
+    "empty": "Нет активных задач",
+    "emptyHint": "Здесь появятся чаты, где агент сейчас работает"
   }
 }
