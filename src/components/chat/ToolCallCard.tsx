@@ -377,9 +377,11 @@ export function ToolCallCard({ tool, isDark }: Props) {
 const s = StyleSheet.create({
   card: {
     backgroundColor: "transparent",
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 8,
+    paddingHorizontal: 0,
+    paddingVertical: 4,
+    borderRadius: 0,
+    marginTop: 4,
+    marginHorizontal: -12,
     borderWidth: 0,
     borderColor: "transparent",
   },
