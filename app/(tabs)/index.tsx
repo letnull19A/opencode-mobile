@@ -444,6 +444,19 @@ export default function SessionsScreen() {
 
       <UpdateBanner isDark={isDark} />
 
+      <TouchableOpacity
+        style={[styles.newProjectBar, isDark && styles.newProjectBarDark]}
+        onPress={() => router.push("/project/new")}
+        activeOpacity={0.7}
+        testID="new-project-button"
+      >
+        <Ionicons name="add-circle-outline" size={18} color={isDark ? "#8b5cf6" : "#6d28d9"} />
+        <Text style={[styles.newProjectText, isDark && styles.newProjectTextDark]}>
+          {t("project.new.title")}
+        </Text>
+        <Ionicons name="chevron-forward" size={16} color={isDark ? "#666666" : "#999999"} />
+      </TouchableOpacity>
+
       <FlatList
         data={projects}
         key={numColumns}
@@ -814,6 +827,27 @@ const styles = StyleSheet.create({
   },
   connectionBarDark: {
     borderBottomColor: "#1a1a1a",
+  },
+  newProjectBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e5e5",
+  },
+  newProjectBarDark: {
+    borderBottomColor: "#1a1a1a",
+  },
+  newProjectText: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#6d28d9",
+  },
+  newProjectTextDark: {
+    color: "#a78bfa",
   },
   connectionInfo: {
     flexDirection: "row",

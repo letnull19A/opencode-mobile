@@ -2,7 +2,7 @@
 // No React Native imports — unit-testable with node --test.
 //
 // Server working directories can be POSIX (/a/b) or Windows (C:\a\b, D:/a/b)
-// since the mobile app can point at either kind of opencode server, so both
+// since the mobile app can point at either kind of devbox server, so both
 // separators are handled.
 
 /** Remove trailing slashes/backslashes, keeping the input if that would empty it. */
@@ -35,4 +35,22 @@ export function nameOf(dir: string): string {
   const trimmed = stripTrailingSlash(dir)
   const lastSlash = Math.max(trimmed.lastIndexOf("/"), trimmed.lastIndexOf("\\"))
   return lastSlash >= 0 ? trimmed.slice(lastSlash + 1) || trimmed : trimmed
+}
+
+export interface Crumb {
+  label: string
+  path: string
+}
+
+/**
+ * Split a POSIX absolute path into tappable breadcrumb segments:
+ * "/home/user/proj" -> ["/", "/home", "/home/user", "/home/user/proj"].
+ */
+export function breadcrumbsOf(dir: string): Crumb[] {
+  const parts = dir.split("/").filter(Boolean)
+  const out: Crumb[] = [{ label: "/", path: "/" }]
+  for (let i = 0; i < parts.length; i++) {
+    out.push({ label: parts[i], path: "/" + parts.slice(0, i + 1).join("/") })
+  }
+  return out
 }

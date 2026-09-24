@@ -224,6 +224,20 @@ function RootLayout() {
                   presentation: "modal",
                 }}
               />
+              <Stack.Screen
+                name="project/new"
+                options={{
+                  title: t("project.new.title"),
+                  presentation: "card",
+                }}
+              />
+              <Stack.Screen
+                name="project/clone"
+                options={{
+                  title: t("project.clone.title"),
+                  presentation: "card",
+                }}
+              />
             </Stack>
               <StatusBar style={isDark ? "light" : "dark"} />
             </AuthGate>
