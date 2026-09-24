@@ -275,6 +275,20 @@ export default function SessionScreen() {
     flatListRef.current?.scrollToOffset({ offset: 0, animated })
   }, [])
 
+  // Auto-scroll: keep indicator visible at bottom of messages block
+  const indicatorStatus = useEvents((s) => (currentSession ? s.sessionStatus[currentSession.id] : undefined))
+  const indicatorText = useEvents((s) => (currentSession ? s.statusText[currentSession.id] : undefined))
+
+  useEffect(() => {
+    if (indicatorStatus?.type !== "idle" || indicatorText) {
+      scrollToBottom(true)
+    }
+  }, [indicatorStatus, indicatorText, scrollToBottom])
+
+  useEffect(() => {
+    if (messageData.length > 0) scrollToBottom(true)
+  }, [messageData.length, scrollToBottom])
+
   // Re-select on every focus, not just mount. currentSession/messages/
   // permissions are a single global store, and the native stack keeps screens
   // underneath a pushed one mounted. Without re-selecting on focus, navigating
@@ -728,13 +742,12 @@ export default function SessionScreen() {
                 <Ionicons name="chevron-down" size={24} color={isDark ? "#ffffff" : "#0a0a0a"} />
               </TouchableOpacity>
             )}
+            {/* Status indicator — always at bottom of messages block, fixed height, auto-scrolls */}
+            <View style={s.statusContainer}>
+              {currentSession && <StatusIndicator sessionID={currentSession.id} isDark={isDark} />}
+            </View>
           </View>
         )}
-
-        {/* Status — fixed height at bottom, always reserved */}
-        <View style={{ height: 40, justifyContent: "center" }}>
-          {currentSession ? <StatusIndicator sessionID={currentSession.id} isDark={isDark} /> : null}
-        </View>
 
         {/* Permissions */}
         {permissions.map((perm) => (
@@ -884,6 +897,7 @@ const s = StyleSheet.create({
   containerDark: { backgroundColor: "#0a0a0a" },
   loading: { flex: 1, justifyContent: "center", alignItems: "center" },
   listWrap: { flex: 1, position: "relative" },
+  statusContainer: { height: 36, justifyContent: "center" },
 
   // Messages
   messageList: { padding: 16, paddingBottom: 8 },
