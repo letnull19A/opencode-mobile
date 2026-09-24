@@ -376,14 +376,14 @@ export function ToolCallCard({ tool, isDark }: Props) {
 
 const s = StyleSheet.create({
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "transparent",
     padding: 10,
     borderRadius: 8,
     marginTop: 8,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
-  cardDark: { backgroundColor: "#2a2a2a", borderColor: "#3a3a3a" },
+  cardDark: { backgroundColor: "transparent", borderColor: "transparent" },
   cardError: { borderColor: "#fecaca" },
   cardErrorDark: { borderColor: "#7f1d1d" },
 

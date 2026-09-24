@@ -137,7 +137,7 @@ const s = StyleSheet.create({
   bubble: { marginBottom: 16, padding: 12, borderRadius: 12, maxWidth: "100%" },
   user: { backgroundColor: "#f5f5f5", marginLeft: 32 },
   userDark: { backgroundColor: "#1a1a1a" },
-  assistant: { backgroundColor: "transparent", alignSelf: "stretch", width: "100%", marginLeft: 0, marginRight: 0 },
+  assistant: { backgroundColor: "transparent", alignSelf: "stretch", width: "100%", marginLeft: 0, marginRight: 0, marginBottom: 8 },
   assistantDark: { backgroundColor: "transparent" },
 
   header: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 8 },
