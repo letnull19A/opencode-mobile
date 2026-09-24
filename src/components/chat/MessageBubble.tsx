@@ -98,8 +98,9 @@ export const MessageBubble = memo(
           <ToolCallCard key={tool.id} tool={tool} isDark={isDark} />
         ))}
 
-        {/* Model + tokens/cost for assistant messages — model moved from header, same style as tokens */}
+        {/* Model + tokens/cost for assistant messages — hidden after tool call per request */}
         {!isUser &&
+          toolParts.length === 0 &&
           (() => {
             const modelName = message.model?.modelID || message.modelID || ""
             const hasTokens = !!message.tokens
