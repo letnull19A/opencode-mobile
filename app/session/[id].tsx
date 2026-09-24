@@ -731,8 +731,10 @@ export default function SessionScreen() {
           </View>
         )}
 
-        {/* Status */}
-        {currentSession && <StatusIndicator sessionID={currentSession.id} isDark={isDark} />}
+        {/* Status — fixed height at bottom, always reserved */}
+        <View style={{ height: 40, justifyContent: "center" }}>
+          {currentSession ? <StatusIndicator sessionID={currentSession.id} isDark={isDark} /> : null}
+        </View>
 
         {/* Permissions */}
         {permissions.map((perm) => (
