@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import type { Client, FileEntry } from "../../lib/sdk"
 import { parentOf, nameOf } from "../../lib/path-utils"
 import { normalizeRoots, type FileRoot } from "../../lib/file-roots"
+import { colors } from "../../lib/theme"
 
 interface Props {
   sheetRef: React.RefObject<BottomSheet | null>
@@ -197,7 +198,7 @@ export function DirectoryBrowserSheet({
             <Ionicons
               name="arrow-up-circle-outline"
               size={22}
-              color={canGoUp ? (isDark ? "#8b5cf6" : "#6d28d9") : isDark ? "#3a3a3a" : "#dddddd"}
+              color={canGoUp ? (isDark ? colors.accentPale : colors.accentStrong) : isDark ? "#3a3a3a" : "#dddddd"}
             />
           </TouchableOpacity>
           <Text style={[s.path, isDark && s.dimDark]} numberOfLines={1} ellipsizeMode="head">
@@ -218,7 +219,7 @@ export function DirectoryBrowserSheet({
               <Ionicons
                 name={root.label === "Home" ? "home-outline" : "layers-outline"}
                 size={14}
-                color={browseDir === root.path ? "#ffffff" : isDark ? "#c4b5fd" : "#6d28d9"}
+                color={browseDir === root.path ? "#ffffff" : isDark ? colors.accentExtraPale : colors.accentStrong}
               />
               <Text
                 style={[
@@ -348,16 +349,16 @@ const s = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 14,
-    backgroundColor: "#e8e5f0",
+    backgroundColor: colors.accentChipBg,
   },
-  rootChipDark: { backgroundColor: "#2a2040" },
-  rootChipActive: { backgroundColor: "#8b5cf6" },
+  rootChipDark: { backgroundColor: colors.accentChipBgDark },
+  rootChipActive: { backgroundColor: colors.accent },
   rootChipText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#6d28d9",
+    color: colors.accentStrong,
   },
-  rootChipTextDark: { color: "#c4b5fd" },
+  rootChipTextDark: { color: colors.accentExtraPale },
   rootChipTextActive: { color: "#ffffff" },
   inputWrap: {
     flexDirection: "row",
