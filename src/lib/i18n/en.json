@@ -235,12 +235,14 @@
     }
   },
   "nav": {
-    "sessionsTab": "Sessions",
+    "sessionsTab": "Projects",
     "connectionsTab": "Connections",
     "settingsTab": "Settings",
     "addConnectionTitle": "Add Connection",
     "editConnectionTitle": "Edit Connection",
-    "accountTab": "Account"
+    "accountTab": "Account",
+    "projectsTab": "Projects",
+    "newProjectTab": "New Project"
   },
   "connectionsList": {
     "activeBadge": "Active",
