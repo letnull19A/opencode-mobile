@@ -239,7 +239,8 @@
     "connectionsTab": "Connections",
     "settingsTab": "Settings",
     "addConnectionTitle": "Add Connection",
-    "editConnectionTitle": "Edit Connection"
+    "editConnectionTitle": "Edit Connection",
+    "accountTab": "Account"
   },
   "connectionsList": {
     "activeBadge": "Active",
@@ -467,5 +468,13 @@
     "action": "Get it",
     "dismiss": "Not now",
     "upToDate": "Up to date"
+  },
+  "account": {
+    "title": "Account",
+    "subtitle": "Your account",
+    "username": "Username",
+    "server": "Server",
+    "logout": "Log Out",
+    "notLoggedIn": "Not logged in"
   }
 }

@@ -245,6 +245,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => <Ionicons name="settings-outline" size={size} color={color as unknown as string} />,
         }}
       />
+      <Tabs.Screen
+        name="account"
+        options={{
+          title: t("nav.accountTab"),
+          tabBarIcon: ({ color, size }) => <Ionicons name="person-circle-outline" size={size} color={color as unknown as string} />,
+        }}
+      />
     </Tabs>
   )
 }

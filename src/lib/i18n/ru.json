@@ -239,7 +239,8 @@
     "connectionsTab": "Подключения",
     "settingsTab": "Настройки",
     "addConnectionTitle": "Add Connection",
-    "editConnectionTitle": "Edit Connection"
+    "editConnectionTitle": "Edit Connection",
+    "accountTab": "Аккаунт"
   },
   "connectionsList": {
     "activeBadge": "Active",
@@ -467,5 +468,13 @@
     "action": "Get it",
     "dismiss": "Not now",
     "upToDate": "Up to date"
+  },
+  "account": {
+    "title": "Аккаунт",
+    "subtitle": "Ваш аккаунт",
+    "username": "Логин",
+    "server": "Сервер",
+    "logout": "Выйти",
+    "notLoggedIn": "Не авторизован"
   }
 }
