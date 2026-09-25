@@ -253,6 +253,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="tasks"
+        options={{
+          title: t("nav.tasksTab"),
+          tabBarIcon: ({ color, size }) => <Ionicons name="pulse-outline" size={size} color={color as unknown as string} />,
+          tabBarBadge: busyCount > 0 ? busyCount : undefined,
+        }}
+      />
+      <Tabs.Screen
         name="new-project"
         options={{
           title: t("nav.newProjectTab"),
@@ -265,14 +273,6 @@ export default function TabLayout() {
             const { openNewProject } = require("../../src/stores/ui").useUi.getState()
             openNewProject()
           },
-        }}
-      />
-      <Tabs.Screen
-        name="tasks"
-        options={{
-          title: t("nav.tasksTab"),
-          tabBarIcon: ({ color, size }) => <Ionicons name="pulse-outline" size={size} color={color as unknown as string} />,
-          tabBarBadge: busyCount > 0 ? busyCount : undefined,
         }}
       />
       <Tabs.Screen
